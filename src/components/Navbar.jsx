@@ -5,11 +5,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Sun, Moon, Menu, X, ChevronDown, User, LayoutDashboard, LogOut, Award } from "lucide-react";
 import toast from "react-hot-toast";
-import { useSession } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 export default function Navbar() {
-
-  const { data:session, isPending } = useSession();
+  const { data: session, isPending } = authClient.useSession();
 
   const pathname = usePathname();
   const router = useRouter();
@@ -17,10 +16,9 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  // Initialize theme from localStorage or system preference
+  // থিম ইনিশিয়ালাইজেশন
   // useEffect(() => {
   //   const savedTheme = localStorage.getItem("theme") || "dark";
-  //   // eslint-disable-next-line react-hooks/set-state-in-effect
   //   setTheme(savedTheme);
   //   if (savedTheme === "dark") {
   //     document.documentElement.classList.add("dark");
@@ -29,7 +27,7 @@ export default function Navbar() {
   //   }
   // }, []);
 
-  // Toggle theme handler
+  // থিম টগল
   const toggleTheme = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
     setTheme(newTheme);
@@ -41,14 +39,16 @@ export default function Navbar() {
     }
   };
 
-  // Sign out handler
+  // সাইন আউট হ্যান্ডলার (সঠিক ফাংশন কল সহ)
   const handleLogout = async () => {
     try {
-      await signOut();
+      // authClient.signOut ব্যবহার করতে হবে যেন কোনো ইম্পোর্ট এরর না হয়
+      await authClient.signOut();
       toast.success("Successfully logged out");
       router.push("/");
       router.refresh();
     } catch (err) {
+      console.error(err);
       toast.error("Error signing out");
     }
   };
@@ -59,17 +59,17 @@ export default function Navbar() {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Public Lessons", href: "/public-lessons" },
-    ...(session ? [
-      { name: "Add Lesson", href: "/dashboard/add-lesson" },
-      { name: "My Lessons", href: "/dashboard/my-lessons" },
-    ] : []),
-    ...(isFreeUser ? [
-      { name: "Pricing / Upgrade", href: "/pricing" }
-    ] : [])
+    ...(session
+      ? [
+          { name: "Add Lesson", href: "/dashboard/add-lesson" },
+          { name: "My Lessons", href: "/dashboard/my-lessons" },
+        ]
+      : []),
+    ...(isFreeUser ? [{ name: "Pricing / Upgrade", href: "/pricing" }] : []),
   ];
 
   return (
-    <nav className="sticky top-0 z-50 glass border-b border-[var(--card-border)] text-[var(--foreground)] backdrop-blur-md">
+    <nav className="sticky top-0 z-50 glass border-b border-(--card-border) text-foreground backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo Section */}
@@ -78,9 +78,7 @@ export default function Navbar() {
               <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-400 flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-indigo-500/20">
                 L
               </div>
-              <span className="font-bold text-xl tracking-tight font-display bg-gradient-to-r from-indigo-500 to-cyan-500 bg-clip-text text-transparent">
-                Life Lessons
-              </span>
+              <span className="font-bold text-xl tracking-tight font-display bg-linear-to-r from-indigo-500 to-cyan-500 bg-clip-text text-transparent">Life Lessons</span>
             </Link>
           </div>
 
@@ -92,14 +90,10 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`relative text-sm font-medium transition-colors hover:text-indigo-400 py-1 ${
-                    isActive ? "text-indigo-500" : "text-slate-400 dark:text-slate-300"
-                  }`}
+                  className={`relative text-sm font-medium transition-colors hover:text-indigo-400 py-1 ${isActive ? "text-indigo-500" : "text-slate-400 dark:text-slate-300"}`}
                 >
                   {link.name}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-indigo-500 to-cyan-400 rounded-full" />
-                  )}
+                  {isActive && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-linear-to-r from-indigo-500 to-cyan-400 rounded-full" />}
                 </Link>
               );
             })}
@@ -133,9 +127,7 @@ export default function Navbar() {
                       session.user.name?.charAt(0).toUpperCase() || "U"
                     )}
                   </div>
-                  <span className="text-xs font-semibold max-w-[100px] truncate hidden lg:block">
-                    {session.user.name}
-                  </span>
+                  <span className="text-xs font-semibold max-w-[100px] truncate hidden lg:block">{session.user.name}</span>
                   <ChevronDown size={14} className="text-slate-400" />
                 </button>
 
@@ -180,10 +172,7 @@ export default function Navbar() {
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Link
-                  href="/auth/login"
-                  className="px-4 py-2 text-sm font-medium hover:text-indigo-500 transition-colors"
-                >
+                <Link href="/auth/login" className="px-4 py-2 text-sm font-medium hover:text-indigo-500 transition-colors">
                   Log In
                 </Link>
                 <Link
@@ -198,18 +187,11 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center space-x-3">
-            {/* Mobile Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-300"
-            >
+            <button onClick={toggleTheme} className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-300">
               {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
             </button>
 
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-300"
-            >
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-300">
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
@@ -226,9 +208,7 @@ export default function Navbar() {
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
                 className={`px-3 py-2 rounded-xl text-sm font-medium transition-all ${
-                  pathname === link.href
-                    ? "bg-indigo-500/10 text-indigo-400"
-                    : "hover:bg-slate-100 dark:hover:bg-slate-800"
+                  pathname === link.href ? "bg-indigo-500/10 text-indigo-400" : "hover:bg-slate-100 dark:hover:bg-slate-800"
                 }`}
               >
                 {link.name}

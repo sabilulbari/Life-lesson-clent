@@ -12,8 +12,7 @@ const FeaturedLession = () => {
   const [lessonsData, setLessonsData] = useState([]);
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
-  console.log(lessonsData, "All the lesson data");
-
+  
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -32,6 +31,7 @@ const FeaturedLession = () => {
 
     loadData();
   }, []);
+      console.log(lessonsData, "All the lesson data");
 
   if (loading) {
     return (

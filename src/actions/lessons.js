@@ -128,8 +128,8 @@ export async function getAdminLessons({ category = "", visibility = "", isReview
 // 9. Get single lesson details
 export async function getLessonById(id) {
   try {
-    const res = await fetch(`${EXPRESS_API}/api/lessons/${id}`, {
-      cache: "no-store"
+    const res = await fetch(`${EXPRESS_API}/api/all/public/lessons/${id}`, {
+      cache: "no-store",
     });
     if (!res.ok) return null;
     return await res.json();

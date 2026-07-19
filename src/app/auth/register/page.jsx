@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signUp, signIn } from "@/lib/auth-client";
-import { KeyRound, Mail, User, Image, Check, X, ShieldAlert } from "lucide-react";
+import { authClient } from "@/lib/auth-client"; // স্ট্যান্ডার্ড authClient ইম্পোর্ট
+import { KeyRound, Mail, User, Image, Check, X } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function Register() {
@@ -34,8 +34,6 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData, "all entered data");
-
     if (!formData.name || !formData.email || !formData.password) {
       toast.error("Please fill in all required fields.");
       return;
@@ -47,37 +45,42 @@ export default function Register() {
     }
 
     setLoading(true);
-    try {
-      const response = await signUp.email({
+
+    // Better-Auth এর স্ট্যান্ডার্ড ইমেল সাইন-আপ মেথড
+    await authClient.signUp.email(
+      {
         email: formData.email,
         password: formData.password,
         name: formData.name,
-        image: formData.image || "", // optional photo URL
-        // callbackURL: "/dashboard",
-      });
-
-      console.log(response, "response from signUp.email");
-
-      if (response?.error) {
-        toast.error(response.error.message || "Failed to register account.");
-      } else {
-        toast.success("Successfully registered! Welcome to Life Lessons.");
-        // router.push("/dashboard");
-        router.refresh();
-      }
-    } catch (err) {
-      toast.error(err.message || "Something went wrong during registration.");
-    } finally {
-      setLoading(false);
-    }
+        image: formData.image || undefined, // ফাকা স্ট্রিং এর বদলে undefined দিলে ভালো হয়
+        callbackURL: "/dashboard", // সফল হলে রিডাইরেক্ট হবে
+      },
+      {
+        onRequest: () => {
+          setLoading(true);
+        },
+        onSuccess: () => {
+          setLoading(false);
+          toast.success("Successfully registered! Welcome.");
+          router.push("/dashboard");
+          router.refresh();
+        },
+        onError: (ctx) => {
+          setLoading(false);
+          // সার্ভারের আসল এরর মেসেজটি এখানে দেখাবে (যেমন: Email already exists)
+          toast.error(ctx.error.message || "Failed to register account.");
+          console.error("Signup Error Context:", ctx.error);
+        },
+      },
+    );
   };
 
   // Handle Google OAuth
   const handleGoogleLogin = async () => {
     try {
-      await signIn.social({
+      await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/dashboard"
+        callbackURL: "/dashboard",
       });
     } catch (err) {
       toast.error("Google authentication failed.");
@@ -92,20 +95,14 @@ export default function Register() {
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative text-center mb-8">
-          <h2 className="text-3xl font-extrabold font-display bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-            Create an Account
-          </h2>
-          <p className="text-slate-400 text-sm mt-2">
-            Start saving and sharing your personal wisdom.
-          </p>
+          <h2 className="text-3xl font-extrabold font-display bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">Create an Account</h2>
+          <p className="text-slate-400 text-sm mt-2">Start saving and sharing your personal wisdom.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Name Field */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">
-              Full Name *
-            </label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Full Name *</label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                 <User size={16} />
@@ -124,9 +121,7 @@ export default function Register() {
 
           {/* Email Field */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">
-              Email Address *
-            </label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Email Address *</label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                 <Mail size={16} />
@@ -145,9 +140,7 @@ export default function Register() {
 
           {/* Photo URL Field */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">
-              Photo URL (Optional)
-            </label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Photo URL (Optional)</label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                 <Image size={16} />
@@ -165,9 +158,7 @@ export default function Register() {
 
           {/* Password Field */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">
-              Password *
-            </label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Password *</label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                 <KeyRound size={16} />
@@ -183,37 +174,19 @@ export default function Register() {
               />
             </div>
 
-            {/* Password Validation Rules visual checks */}
+            {/* Password Validation Rules */}
             <div className="mt-2.5 p-3 rounded-xl bg-slate-800/30 border border-slate-700/30 text-xs space-y-1.5">
               <div className="flex items-center space-x-2">
-                {validations.minLength ? (
-                  <Check size={12} className="text-emerald-400" />
-                ) : (
-                  <X size={12} className="text-rose-400" />
-                )}
-                <span className={validations.minLength ? "text-emerald-400" : "text-slate-400"}>
-                  At least 6 characters long
-                </span>
+                {validations.minLength ? <Check size={12} className="text-emerald-400" /> : <X size={12} className="text-rose-400" />}
+                <span className={validations.minLength ? "text-emerald-400" : "text-slate-400"}>At least 6 characters long</span>
               </div>
               <div className="flex items-center space-x-2">
-                {validations.hasUppercase ? (
-                  <Check size={12} className="text-emerald-400" />
-                ) : (
-                  <X size={12} className="text-rose-400" />
-                )}
-                <span className={validations.hasUppercase ? "text-emerald-400" : "text-slate-400"}>
-                  Contains at least one uppercase letter
-                </span>
+                {validations.hasUppercase ? <Check size={12} className="text-emerald-400" /> : <X size={12} className="text-rose-400" />}
+                <span className={validations.hasUppercase ? "text-emerald-400" : "text-slate-400"}>Contains at least one uppercase letter</span>
               </div>
               <div className="flex items-center space-x-2">
-                {validations.hasLowercase ? (
-                  <Check size={12} className="text-emerald-400" />
-                ) : (
-                  <X size={12} className="text-rose-400" />
-                )}
-                <span className={validations.hasLowercase ? "text-emerald-400" : "text-slate-400"}>
-                  Contains at least one lowercase letter
-                </span>
+                {validations.hasLowercase ? <Check size={12} className="text-emerald-400" /> : <X size={12} className="text-rose-400" />}
+                <span className={validations.hasLowercase ? "text-emerald-400" : "text-slate-400"}>Contains at least one lowercase letter</span>
               </div>
             </div>
           </div>
@@ -224,11 +197,7 @@ export default function Register() {
             disabled={loading}
             className="w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 font-semibold text-white shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/35 transition-all flex items-center justify-center space-x-2 active:scale-95 disabled:opacity-50"
           >
-            {loading ? (
-              <span className="w-5 h-5 border-2 border-white border-t-transparent animate-spin rounded-full" />
-            ) : (
-              <span>Sign Up</span>
-            )}
+            {loading ? <span className="w-5 h-5 border-2 border-white border-t-transparent animate-spin rounded-full" /> : <span>Sign Up</span>}
           </button>
         </form>
 
@@ -240,22 +209,10 @@ export default function Register() {
             className="w-full py-2.5 rounded-xl border border-slate-700/50 bg-slate-800/40 text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all flex items-center justify-center space-x-2 font-medium text-sm"
           >
             <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
-              <path
-                fill="currentColor"
-                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-              />
-              <path
-                fill="currentColor"
-                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-              />
-              <path
-                fill="currentColor"
-                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-              />
-              <path
-                fill="currentColor"
-                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-              />
+              <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+              <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
             </svg>
             <span>Continue with Google</span>
           </button>

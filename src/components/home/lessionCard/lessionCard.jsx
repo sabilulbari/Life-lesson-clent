@@ -60,7 +60,7 @@ const LessionCard = ({ lesson, session }) => {
 
         {/* Details button */}
         <Link
-          href={`/lessons/${lesson._id}`}
+          href={`/public-lessons/${lesson._id}`}
           className="px-3.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-indigo-500 border border-slate-700/50 hover:border-indigo-400 font-semibold text-xs text-slate-200 hover:text-white transition-all duration-300 flex items-center space-x-1"
         >
           <span>Details</span>

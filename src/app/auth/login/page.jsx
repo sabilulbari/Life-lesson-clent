@@ -27,6 +27,8 @@ export default function Login() {
       return;
     }
 
+    console.log("Submitting login form with data:", formData);
+
     setLoading(true);
     try {
       const response = await signIn.email({
@@ -34,6 +36,8 @@ export default function Login() {
         password: formData.password,
         callbackURL: "/dashboard",
       });
+
+      console.log(response);
 
       if (response?.error) {
         toast.error(response.error.message || "Invalid credentials.");
@@ -61,8 +65,8 @@ export default function Login() {
   };
 
   return (
-    <div className="flex-grow flex items-center justify-center py-12">
-      <div className="w-full max-w-md glass rounded-3xl p-8 border border-[var(--card-border)] relative overflow-hidden">
+    <div className="grow flex items-center justify-center py-12">
+      <div className="w-full max-w-md glass rounded-3xl p-8 border border-(--card-border) relative overflow-hidden">
         {/* Decorative lights */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
@@ -93,7 +97,7 @@ export default function Login() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="john@example.com"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800/40 border border-slate-700/50 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none text-sm text-[var(--foreground)] transition-all"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800/40 border border-slate-700/50 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none text-sm text-foreground transition-all"
               />
             </div>
           </div>
@@ -114,7 +118,7 @@ export default function Login() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800/40 border border-slate-700/50 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none text-sm text-[var(--foreground)] transition-all"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800/40 border border-slate-700/50 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none text-sm text-foreground transition-all"
               />
             </div>
           </div>
@@ -163,8 +167,8 @@ export default function Login() {
         </div>
 
         <p className="mt-6 text-center text-xs text-slate-400">
-          Don't have an account?{" "}
-          <Link href="/register" className="text-indigo-400 hover:text-indigo-300 font-semibold underline">
+          Don&apos;t have an account?{" "}
+          <Link href="/auth/register" className="text-indigo-400 hover:text-indigo-300 font-semibold underline">
             Register Here
           </Link>
         </p>

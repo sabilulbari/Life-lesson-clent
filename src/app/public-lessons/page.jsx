@@ -166,7 +166,7 @@ export default function PublicLessons() {
             return (
               <div
                 key={lesson._id}
-                className="glass rounded-2xl border border-[var(--card-border)] p-5 flex flex-col justify-between h-[320px] hover:shadow-xl transition-all relative overflow-hidden group"
+                className="glass rounded-2xl border border-[var(--card-border)] p-5 flex flex-col justify-between min-h-[420px] hover:shadow-xl transition-all relative overflow-hidden group"
               >
                 {/* Lock Screen overlay if locked */}
                 {isLocked && (
@@ -180,8 +180,9 @@ export default function PublicLessons() {
                   </div>
                 )}
 
-                {/* Card Top Body */}
-                <div className="space-y-3">
+                {/* Card Main Body */}
+                <div className="space-y-3 flex-1 flex flex-col">
+                  {/* 1. Header Area */}
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-semibold text-indigo-400 uppercase tracking-wide">{lesson.category}</span>
                     <span
@@ -193,18 +194,28 @@ export default function PublicLessons() {
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-lg leading-snug line-clamp-2 text-slate-100 group-hover:text-indigo-400 transition-colors">{lesson.title}</h3>
+                  {/* 2. Image Area (Aligned perfectly below the header) */}
+                  {lesson.lessonImage && (
+                    <div className="w-full h-40 rounded-xl overflow-hidden border border-slate-800/55 bg-slate-900 flex items-center justify-center shrink-0">
+                      <img src={lesson.lessonImage} alt={lesson.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    </div>
+                  )}
 
-                  <p className="text-slate-400 text-xs leading-relaxed line-clamp-3">{lesson.description}</p>
+                  {/* 3. Text Details Area */}
+                  <div className="flex-1 space-y-2">
+                    <h3 className="font-bold text-base leading-snug line-clamp-2 text-slate-100 group-hover:text-indigo-400 transition-colors">{lesson.title}</h3>
 
-                  {/* Emotional Tone Indicator */}
-                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-slate-800/60 text-slate-300 text-[10px] font-semibold border border-slate-700/50">
+                    <p className="text-slate-400 text-xs leading-relaxed line-clamp-2">{lesson.description}</p>
+                  </div>
+
+                  {/* 4. Emotional Tone Indicator */}
+                  <div className="self-start inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-slate-800/60 text-slate-300 text-[10px] font-semibold border border-slate-700/50">
                     <Sparkles size={8} /> {lesson.emotionalTone}
                   </div>
                 </div>
 
                 {/* Card Footer */}
-                <div className="pt-4 border-t border-slate-800/40 flex items-center justify-between">
+                <div className="pt-4 mt-4 border-t border-slate-800/40 flex items-center justify-between shrink-0">
                   {/* Creator */}
                   <div className="flex items-center space-x-2.5">
                     <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-700 flex items-center justify-center text-white text-xs font-bold">
