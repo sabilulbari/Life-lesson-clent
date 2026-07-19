@@ -15,7 +15,7 @@ import LessonBody from "@/components/lesson-details/LessonBody";
 import LessonSidebar from "@/components/lesson-details/LessonSidebar";
 import CommentSection from "@/components/lesson-details/CommentSection";
 import ReportModal from "@/components/lesson-details/ReportModal";
-import { getLessonById } from "@/actions/lessons";
+import { getLessonById, likeLesson } from "@/actions/lessons";
 
 export default function LessonDetails() {
   const params = useParams();
@@ -85,6 +85,7 @@ export default function LessonDetails() {
     }
     try {
       const res = await likeLesson(id);
+      console.log(res.error, "Error from like lesson");
       if (res.error) toast.error(res.error);
       else {
         setLikesCount(res.likesCount);
