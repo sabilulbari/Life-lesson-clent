@@ -4,28 +4,26 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { authClient, useSession } from "@/lib/auth-client";
-// import { likeLesson, favoriteLesson, reportLesson, getComments, addComment, getLessons } from "@/actions/lessons";
+
 import { ArrowLeft, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
 import jsPDF from "jspdf";
 
-// নতুন কম্পোনেন্টগুলো ইম্পোর্ট করুন
 import LessonHeader from "@/components/lesson-details/LessonHeader";
 import LessonBody from "@/components/lesson-details/LessonBody";
 import LessonSidebar from "@/components/lesson-details/LessonSidebar";
 import CommentSection from "@/components/lesson-details/CommentSection";
 import ReportModal from "@/components/lesson-details/ReportModal";
-import { getLessonById, likeLesson } from "@/actions/lessons";
+import { addComment, favoriteLesson, getComments, getLessonById, likeLesson, reportLesson} from "@/actions/lessons";
+import { getLessons } from "@/lib/api/lesson";
 
 export default function LessonDetails() {
   const params = useParams();
   const router = useRouter();
   const id = params.id;
   const { data: session } = authClient.useSession();
-  console.log(session, "sesson from details");
 
   const [lesson, setLesson] = useState(null);
-  console.log(lesson, "lesson from page details");
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [recommended, setRecommended] = useState([]);
@@ -60,12 +58,12 @@ export default function LessonDetails() {
         setFavorited(lessonData.favorites?.includes(session.user.id));
       }
 
-      // const commentData = await getComments(id);
-      // setComments(commentData || []);
+      const commentData = await getComments(id);
+      setComments(commentData || []);
 
-      // const publicData = await getLessons({ category: lessonData.category });
-      // const filtered = (publicData || []).filter((l) => l._id !== id).slice(0, 6);
-      // setRecommended(filtered);
+      const publicData = await getLessons({ category: lessonData.category });
+      const filtered = (publicData || []).filter((l) => l._id !== id).slice(0, 6);
+      setRecommended(filtered);
     } catch (err) {
       toast.error("Failed to load details");
     } finally {
@@ -80,12 +78,11 @@ export default function LessonDetails() {
   const handleLike = async () => {
     if (!session) {
       toast.error("Please log in to like");
-      router.push("/login");
+      router.push("/auth/login");
       return;
     }
     try {
       const res = await likeLesson(id);
-      console.log(res.error, "Error from like lesson");
       if (res.error) toast.error(res.error);
       else {
         setLikesCount(res.likesCount);
@@ -99,7 +96,7 @@ export default function LessonDetails() {
   const handleFavorite = async () => {
     if (!session) {
       toast.error("Please log in to save to favorites");
-      router.push("/login");
+      router.push("/auth/login");
       return;
     }
     try {
@@ -119,12 +116,12 @@ export default function LessonDetails() {
     e.preventDefault();
     if (!session) {
       toast.error("Please log in to comment");
-      router.push("/login");
+      router.push("/auth/login");
       return;
     }
     if (!newComment.trim()) return;
     try {
-      const res = await addComment(id, newComment);
+      const res = await addComment(id[0], newComment);
       if (res.error) toast.error(res.error);
       else {
         setComments([res.comment, ...comments]);
@@ -139,11 +136,11 @@ export default function LessonDetails() {
   const handleReportSubmit = async () => {
     if (!session) {
       toast.error("Please log in to report lessons");
-      router.push("/login");
+      router.push("/auth/login");
       return;
     }
     try {
-      const res = await reportLesson(id, lesson.title, reportReason);
+      const res = await reportLesson(id[0], lesson.title, reportReason);
       if (res.error) toast.error(res.error);
       else {
         toast.success("Thank you. Reported successfully.");

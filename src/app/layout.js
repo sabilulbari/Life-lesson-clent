@@ -8,7 +8,6 @@ export const metadata = {
   description: "A premium platform to create, store, and share meaningful life lessons, personal growth insights, and wisdom. Join the community to learn and reflect.",
   keywords: "life lessons, wisdom, personal growth, mindful reflection, self improvement, database of knowledge",
   authors: [{ name: "Life Lessons Team" }],
-  viewport: "width=device-width, initial-scale=1.0",
 };
 
 export default function RootLayout({ children }) {

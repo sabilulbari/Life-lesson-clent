@@ -322,6 +322,19 @@ export async function addComment(lessonId, content) {
 // REPORTS SERVER ACTIONS
 
 // 1. Report a lesson
+
+export async function reportLesson1(lessonId, lessonTitle, reason){
+  const res = await fetch(`${EXPRESS_API}/api/reports`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ lessonId, lessonTitle, reason }),
+  });
+
+  const result = await res.json()
+  return result;
+}
 export async function reportLesson(lessonId, lessonTitle, reason) {
   try {
     const authHeaders = await getAuthHeaders();
