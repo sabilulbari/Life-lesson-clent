@@ -9,7 +9,7 @@ export async function POST(request) {
     const headersList = await headers();
     const origin = headersList.get("origin");
     const user = await getUserSession()
-    const customer_email = user?.email;
+    const customer_email= user?.email;
 
 
     const formData = await request.formData()
@@ -25,6 +25,7 @@ export async function POST(request) {
           quantity: 1,
         },
       ],
+      metadata: {planId},
       mode: "payment",
       success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
     });

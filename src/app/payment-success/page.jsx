@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { stripe } from "@/lib/stripe";
 import PaymentSuccess from "@/components/PaymentSuccess";
+import { submitPricingData } from "@/lib/api/pricing";
 
 export default async function SuccessPage({ searchParams }) {
   const { session_id } = await searchParams;
@@ -13,7 +14,6 @@ export default async function SuccessPage({ searchParams }) {
     expand: ["line_items", "payment_intent"],
   });
 
-  console.log(session, session_id, " session from succcess page");
 
   const { status, customer_details, amount_total, currency, payment_intent } = session;
 
@@ -32,6 +32,15 @@ export default async function SuccessPage({ searchParams }) {
     console.log(payment_intent.id, "txnId from success page");
 
     const customerEmail = customer_details?.email || "";
+
+    const subsInfo = {
+      email: customerEmail,
+      planId: session?.metadata.planId || "",
+    }
+
+    const updateSubscriptionResponse = await submitPricingData(subsInfo);
+    console.log(updateSubscriptionResponse);
+
 
     return <PaymentSuccess transactionId={txnId} amount={formattedAmount} planName="Life Lessons Premium" customerEmail={customerEmail} />;
   }
