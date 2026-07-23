@@ -15,7 +15,7 @@ export default function ReportModal({ reportReason, setReportReason, setReportMo
           <select
             value={reportReason}
             onChange={(e) => setReportReason(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl bg-slate-850 border border-slate-700/50 outline-none text-sm text-[var(--foreground)] focus:border-rose-500 cursor-pointer"
+            className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700/50 outline-none text-sm text-foreground focus:border-rose-500 cursor-pointer"
           >
             <option value="Spam">Spam Content</option>
             <option value="Inappropriate">Inappropriate / Offensive Language</option>

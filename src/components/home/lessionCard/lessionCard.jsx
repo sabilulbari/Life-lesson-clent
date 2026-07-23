@@ -1,4 +1,5 @@
-import { ArrowRight, ShieldAlert, Sparkles } from 'lucide-react';
+import { ArrowRight, Lock, ShieldAlert, Sparkles } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
@@ -7,20 +8,25 @@ const LessionCard = ({ lesson, session }) => {
   const isPremium = lesson.accessLevel === "premium";
   const userPlan = session?.user?.plan || "free";
   const isLocked = isPremium && userPlan !== "premium" && session?.user?.role !== "admin" && session?.user?.id !== lesson.creatorId;
+
+  console.log(lesson.creatorPhoto);
+
   return (
-    <div className="glass rounded-2xl border border-(--card-border) p-5 flex flex-col justify-between h-75 hover:shadow-lg transition-all relative overflow-hidden group">
-      {/* Blurred lock overlay if user is not premium */}
+    <div
+      key={lesson._id}
+      className="glass rounded-2xl border border-[var(--card-border)] p-5 flex flex-col justify-between min-h-[420px] hover:shadow-xl transition-all relative overflow-hidden group"
+    >
+      {/* Lock Screen overlay if locked */}
       {isLocked && (
         <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md z-20 flex flex-col items-center justify-center p-4 text-center">
-          <ShieldAlert size={36} className="text-indigo-400 mb-2 animate-bounce" />
+          <Lock size={36} className="text-indigo-400 mb-2 animate-bounce" />
           <h3 className="font-bold text-white text-base">Premium Lesson</h3>
-          <p className="text-xs text-slate-300 mt-1 max-w-50 mb-4">Upgrade to Premium to unlock this personal wisdom.</p>
+          <p className="text-xs text-slate-300 mt-1 max-w-50 mb-4">Upgrade to Premium to view this lesson and details.</p>
           <Link href="/pricing" className="px-4 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-semibold text-xs transition-colors">
             Upgrade to View
           </Link>
         </div>
       )}
-
       {/* Card Body */}
       <div className="space-y-3">
         {/* Category & Badge */}
@@ -40,7 +46,12 @@ const LessionCard = ({ lesson, session }) => {
 
         {/* Title */}
         <h3 className="font-bold text-lg leading-snug line-clamp-2 dark:text-slate-100 group-hover:text-indigo-400 transition-colors">{lesson.title}</h3>
-
+        {/* 2. Image Area (Aligned perfectly below the header) */}
+        {lesson.lessonImage && (
+          <div className="w-full h-40 rounded-xl overflow-hidden border border-slate-800/55 bg-slate-900 flex items-center justify-center shrink-0">
+            <Image src={lesson.lessonImage} width={300} height={200} alt={lesson.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          </div>
+        )}
         {/* Short Preview */}
         <p className="text-slate-400 text-xs leading-relaxed line-clamp-3">{lesson.description}</p>
       </div>
@@ -50,7 +61,11 @@ const LessionCard = ({ lesson, session }) => {
         {/* Creator Info */}
         <div className="flex items-center space-x-2.5">
           <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-700 flex items-center justify-center text-white text-xs font-bold">
-            {lesson.creatorPhoto ? <img src={lesson.creatorPhoto} alt={lesson.creatorName} className="w-full h-full object-cover" /> : lesson.creatorName?.charAt(0).toUpperCase()}
+            {lesson.creatorPhoto ? (
+              <Image src={lesson.creatorPhoto} width={200} height={200} alt={lesson.creatorName} className="w-full h-full object-cover" />
+            ) : (
+              lesson.creatorName?.charAt(0).toUpperCase()
+            )}
           </div>
           <div>
             <div className="text-xs font-semibold text-slate-200 truncate max-w-25">{lesson.creatorName}</div>

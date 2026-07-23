@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { authClient, useSession } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { ArrowLeft, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
@@ -14,7 +14,7 @@ import LessonBody from "@/components/lesson-details/LessonBody";
 import LessonSidebar from "@/components/lesson-details/LessonSidebar";
 import CommentSection from "@/components/lesson-details/CommentSection";
 import ReportModal from "@/components/lesson-details/ReportModal";
-import { addComment, favoriteLesson, getComments, getLessonById, likeLesson, reportLesson} from "@/actions/lessons";
+import { addComment, favoriteLesson, getComments, getLessonById, likeLesson, reportLesson } from "@/actions/lessons";
 import { getLessons } from "@/lib/api/lesson";
 
 export default function LessonDetails() {
@@ -37,6 +37,11 @@ export default function LessonDetails() {
 
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [reportReason, setReportReason] = useState("Spam");
+
+  if (!session) {
+    router.push("/auth/login");
+    return;
+  }
 
   const loadData = async () => {
     if (!id) return;
@@ -279,4 +284,3 @@ export default function LessonDetails() {
     </div>
   );
 }
-

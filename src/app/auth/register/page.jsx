@@ -46,7 +46,6 @@ export default function Register() {
 
     setLoading(true);
 
-    // Better-Auth এর স্ট্যান্ডার্ড ইমেল সাইন-আপ মেথড
     await authClient.signUp.email(
       {
         email: formData.email,

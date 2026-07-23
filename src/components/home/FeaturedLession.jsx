@@ -7,21 +7,21 @@ import React, { useEffect, useState } from "react";
 import LessionCard from "./lessionCard/lessionCard";
 import { getAllLessons } from "@/lib/api/lesson";
 import { getUserSession } from "@/lib/core/session";
+import { authClient } from "@/lib/auth-client";
 
 const FeaturedLession = () => {
   const [lessonsData, setLessonsData] = useState([]);
-  const [session, setSession] = useState(null);
+  // const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+  const {data: session}= authClient.useSession(); // Assuming you have a custom hook for session management
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
 
-        const [lessons, sessionRes] = await Promise.all([getAllLessons(), getUserSession()]);
+        const [lessons] = await Promise.all([getAllLessons()]);
 
         setLessonsData(lessons || []);
-        setSession(sessionRes?.data || null);
       } catch (error) {
         console.error("Error loading featured insights:", error);
       } finally {
@@ -31,7 +31,6 @@ const FeaturedLession = () => {
 
     loadData();
   }, []);
-      console.log(lessonsData, "All the lesson data");
 
   if (loading) {
     return (
