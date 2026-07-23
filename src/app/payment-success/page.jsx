@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { stripe } from "@/lib/stripe";
 import PaymentSuccess from "@/components/PaymentSuccess";
-import { submitPricingData } from "@/lib/api/pricing";
+import { submitPricingData } from "@/lib/action/pricing";
 
 export default async function SuccessPage({ searchParams }) {
   const { session_id } = await searchParams;

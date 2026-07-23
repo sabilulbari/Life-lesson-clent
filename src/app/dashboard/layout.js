@@ -1,7 +1,6 @@
 "use client";
 
-import { useSession } from "@/lib/auth-client";
-import { usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
@@ -21,17 +20,19 @@ import {
   ArrowRight
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { authClient } from "@/lib/auth-client";
 
 export default function DashboardLayout({ children }) {
-  const { data: session, isPending } = useSession();
+  const { data: session, isPending } = authClient.useSession();
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+
   useEffect(() => {
     if (!isPending && !session) {
       toast.error("Please login to access the dashboard.");
-      router.push("/login");
+      router.push("/auth/login");
     }
   }, [session, isPending, router]);
 

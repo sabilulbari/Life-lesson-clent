@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
-import { createLesson } from "@/actions/lessons";
 import { HelpCircle, PlusCircle, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
+import { createLesson } from "@/lib/action/lession";
 
 const CATEGORIES = ["Personal Growth", "Career", "Relationships", "Mindset", "Mistakes Learned"];
 const TONES = ["Motivational", "Sad", "Realization", "Gratitude"];
@@ -34,7 +34,7 @@ export default function AddLesson() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log(formData, "form data ")
     if (!formData.title || !formData.description) {
       toast.error("Title and description are required.");
       return;
@@ -67,21 +67,15 @@ export default function AddLesson() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">
-          Share Your Realization
-        </h1>
-        <p className="text-xs text-slate-400 mt-1">
-          Document your personal growth or milestones and help inspire the community.
-        </p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">Share Your Realization</h1>
+        <p className="text-xs text-slate-400 mt-1">Document your personal growth or milestones and help inspire the community.</p>
       </div>
 
       {/* Form Card */}
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Title */}
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">
-            Lesson Title *
-          </label>
+          <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Lesson Title *</label>
           <input
             type="text"
             name="title"
@@ -96,9 +90,7 @@ export default function AddLesson() {
         {/* Category & Emotional Tone */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">
-              Category *
-            </label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Category *</label>
             <select
               name="category"
               value={formData.category}
@@ -106,15 +98,15 @@ export default function AddLesson() {
               className="w-full px-4 py-2.5 rounded-xl bg-slate-800/40 border border-slate-700/50 outline-none text-sm text-[var(--foreground)] focus:border-indigo-500 transition-all cursor-pointer"
             >
               {CATEGORIES.map((c) => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c} value={c}>
+                  {c}
+                </option>
               ))}
             </select>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">
-              Emotional Tone *
-            </label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Emotional Tone *</label>
             <select
               name="emotionalTone"
               value={formData.emotionalTone}
@@ -122,7 +114,9 @@ export default function AddLesson() {
               className="w-full px-4 py-2.5 rounded-xl bg-slate-800/40 border border-slate-700/50 outline-none text-sm text-[var(--foreground)] focus:border-indigo-500 transition-all cursor-pointer"
             >
               {TONES.map((t) => (
-                <option key={t} value={t}>{t}</option>
+                <option key={t} value={t}>
+                  {t}
+                </option>
               ))}
             </select>
           </div>
@@ -132,9 +126,7 @@ export default function AddLesson() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Image (Optional) */}
           <div className="sm:col-span-1">
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">
-              Featured Image URL
-            </label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Featured Image URL</label>
             <input
               type="url"
               name="image"
@@ -150,12 +142,7 @@ export default function AddLesson() {
             <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide flex items-center gap-1">
               Access Level
               {!isPremiumUser && (
-                <HelpCircle
-                  size={12}
-                  className="text-slate-500 cursor-help"
-                  onMouseEnter={() => setShowTooltip(true)}
-                  onMouseLeave={() => setShowTooltip(false)}
-                />
+                <HelpCircle size={12} className="text-slate-500 cursor-help" onMouseEnter={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)} />
               )}
             </label>
             <select
@@ -179,9 +166,7 @@ export default function AddLesson() {
 
           {/* Visibility */}
           <div className="sm:col-span-1">
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">
-              Visibility
-            </label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Visibility</label>
             <select
               name="visibility"
               value={formData.visibility}
@@ -196,9 +181,7 @@ export default function AddLesson() {
 
         {/* Description / Stories */}
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">
-            Full Description / Story / Wisdom *
-          </label>
+          <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Full Description / Story / Insight *</label>
           <textarea
             name="description"
             required
