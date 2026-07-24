@@ -48,7 +48,8 @@ export default function LessonDetails() {
     setLoading(true);
     try {
       const lessonData = await getLessonById(id);
-      console.log("Lesson Data:", lessonData, id);
+      const authorLessonData = await getLessonById(lessonData.creatorId);
+      console.log(authorLessonData, "Author's lesson data");
       if (!lessonData) {
         toast.error("Lesson not found");
         router.push("/public-lessons");

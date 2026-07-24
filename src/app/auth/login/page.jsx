@@ -34,16 +34,15 @@ export default function Login() {
       const response = await signIn.email({
         email: formData.email,
         password: formData.password,
-        callbackURL: "/dashboard",
+        callbackURL: "/",
       });
 
-      console.log(response);
 
       if (response?.error) {
         toast.error(response.error.message || "Invalid credentials.");
       } else {
         toast.success("Successfully logged in!");
-        router.push("/dashboard");
+        router.push("/");
         router.refresh();
       }
     } catch (err) {
@@ -57,7 +56,7 @@ export default function Login() {
     try {
       await signIn.social({
         provider: "google",
-        callbackURL: "/dashboard"
+        callbackURL: "/"
       });
     } catch (err) {
       toast.error("Google authentication failed.");

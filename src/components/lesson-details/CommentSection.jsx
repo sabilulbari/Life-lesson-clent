@@ -19,7 +19,7 @@ export default function CommentSection({ comments, session, newComment, setNewCo
         <button
           type="submit"
           disabled={!session || !newComment.trim()}
-          className="px-4 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-semibold text-sm transition-colors flex items-center justify-center disabled:opacity-50"
+          className="px-4 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-semibold text-sm transition-colors flex items-center justify-center disabled:opacity-50 cursor-pointer"
         >
           <Send size={16} />
         </button>
