@@ -13,5 +13,9 @@ export async function getLessons({ category = "", emotionalTone = "", search = "
   return serverFetch(`/api/all/public/lessons?${query.toString()}`)
 }
 
+export const getUserLesson = async(id)=>{
+  return serverFetch(`/api/lessons/my-lessons/${id}`);
+}
+
 
 

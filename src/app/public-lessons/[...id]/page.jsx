@@ -48,6 +48,7 @@ export default function LessonDetails() {
     setLoading(true);
     try {
       const lessonData = await getLessonById(id);
+      //কাজ বাকি আছে, এখানে আমরা লেখকের তথ্যও আনতে চাই। তাই আমরা লেখকের আইডি ব্যবহার করে getLessonById ফাংশন কল করছি。
       const authorLessonData = await getLessonById(lessonData.creatorId);
       console.log(authorLessonData, "Author's lesson data");
       if (!lessonData) {

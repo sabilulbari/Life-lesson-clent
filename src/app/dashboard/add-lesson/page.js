@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 import { HelpCircle, PlusCircle, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
@@ -16,6 +16,16 @@ export default function AddLesson() {
   const [loading, setLoading] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
+  const INITIAL_FORM_DATA = {
+    title: "",
+    category: "Personal Growth",
+    emotionalTone: "Motivational",
+    image: "",
+    accessLevel: "Free",
+    visibility: "Public",
+    description: "",
+  };
+
   const [formData, setFormData] = useState({
     title: "",
     category: "Personal Growth",
@@ -23,7 +33,7 @@ export default function AddLesson() {
     image: "",
     accessLevel: "Free",
     visibility: "Public",
-    description: ""
+    description: "",
   });
 
   const isPremiumUser = session?.user?.plan === "premium";
@@ -34,7 +44,6 @@ export default function AddLesson() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData, "form data ")
     if (!formData.title || !formData.description) {
       toast.error("Title and description are required.");
       return;
@@ -45,7 +54,7 @@ export default function AddLesson() {
       // Force Free if user is not premium
       const submitData = {
         ...formData,
-        accessLevel: isPremiumUser ? formData.accessLevel : "Free"
+        accessLevel: isPremiumUser ? formData.accessLevel : "Free",
       };
 
       const res = await createLesson(submitData);
@@ -53,8 +62,8 @@ export default function AddLesson() {
         toast.error(res.error);
       } else {
         toast.success("Life lesson posted successfully!");
+        setFormData(INITIAL_FORM_DATA);
         router.push("/dashboard/my-lessons");
-        router.refresh();
       }
     } catch (err) {
       toast.error("Failed to submit form.");
