@@ -5,6 +5,7 @@ import { getAdminUsersList, updateUserRole, deleteUserAccount } from "@/actions/
 import { useSession } from "@/lib/auth-client";
 import { UserCheck, Trash2, ShieldCheck, Mail, ShieldAlert } from "lucide-react";
 import toast from "react-hot-toast";
+import { getUserListOfAdmin } from "@/lib/api/AdminAllUsers";
 
 export default function ManageUsers() {
   const { data: session } = useSession();
@@ -18,7 +19,7 @@ export default function ManageUsers() {
   const loadUsers = async () => {
     setLoading(true);
     try {
-      const data = await getAdminUsersList();
+      const data = await getUserListOfAdmin();
       setUsers(data || []);
     } catch (err) {
       toast.error("Failed to load users list");
@@ -82,12 +83,8 @@ export default function ManageUsers() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">
-          User Management
-        </h1>
-        <p className="text-xs text-slate-400 mt-1">
-          Promote users to administrative privileges or delete accounts from the database.
-        </p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">User Management</h1>
+        <p className="text-xs text-slate-400 mt-1">Promote users to administrative privileges or delete accounts from the database.</p>
       </div>
 
       {loading ? (
@@ -116,29 +113,23 @@ export default function ManageUsers() {
                   <td className="py-3 px-2">
                     <div className="flex items-center space-x-2.5">
                       <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-700 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                        {u.image ? (
-                          <img src={u.image} alt={u.name} className="w-full h-full object-cover" />
-                        ) : (
-                          u.name?.charAt(0).toUpperCase()
-                        )}
+                        {u.image ? <img src={u.image} alt={u.name} className="w-full h-full object-cover" /> : u.name?.charAt(0).toUpperCase()}
                       </div>
                       <span className="font-bold text-slate-200">{u.name}</span>
                     </div>
                   </td>
                   <td className="py-3 px-2 font-medium">{u.email}</td>
-                  
+
                   {/* Total Lessons Created */}
-                  <td className="py-3 px-2 text-center font-bold text-slate-200">
-                    {u.lessonCount || 0}
-                  </td>
+                  <td className="py-3 px-2 text-center font-bold text-slate-200">{u.totalLessonCreated || 0}</td>
 
                   {/* Current Role Badge */}
                   <td className="py-3 px-2 text-center">
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-bold uppercase ${
-                      u.role === "admin"
-                        ? "bg-rose-500/15 text-rose-400 border border-rose-500/25"
-                        : "bg-slate-800 text-slate-400"
-                    }`}>
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-bold uppercase ${
+                        u.role === "admin" ? "bg-rose-500/15 text-rose-400 border border-rose-500/25" : "bg-slate-800 text-slate-400"
+                      }`}
+                    >
                       {u.role === "admin" && <ShieldCheck size={11} />}
                       <span>{u.role}</span>
                     </span>
@@ -181,14 +172,9 @@ export default function ManageUsers() {
           <div className="w-full max-w-sm glass rounded-3xl border border-[var(--card-border)] p-6 space-y-4 text-center animate-in zoom-in-95 duration-200">
             <ShieldAlert size={36} className="text-rose-500 mx-auto" />
             <h3 className="text-base font-bold text-slate-200">Delete User Account?</h3>
-            <p className="text-xs text-slate-400">
-              Are you sure? This will permanently delete this user account and all of their created lessons, comments, and reports.
-            </p>
+            <p className="text-xs text-slate-400">Are you sure? This will permanently delete this user account and all of their created lessons, comments, and reports.</p>
             <div className="flex items-center justify-center space-x-2 pt-2">
-              <button
-                onClick={() => setDeleteId(null)}
-                className="px-4 py-2 rounded-xl bg-slate-850 text-xs font-semibold text-slate-300 hover:bg-slate-750 transition-colors"
-              >
+              <button onClick={() => setDeleteId(null)} className="px-4 py-2 rounded-xl bg-slate-850 text-xs font-semibold text-slate-300 hover:bg-slate-750 transition-colors">
                 Cancel
               </button>
               <button
@@ -196,11 +182,7 @@ export default function ManageUsers() {
                 disabled={deleting}
                 className="px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-semibold text-xs transition-colors flex items-center justify-center"
               >
-                {deleting ? (
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full" />
-                ) : (
-                  <span>Delete User</span>
-                )}
+                {deleting ? <span className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full" /> : <span>Delete User</span>}
               </button>
             </div>
           </div>

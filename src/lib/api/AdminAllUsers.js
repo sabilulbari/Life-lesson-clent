@@ -2,6 +2,6 @@
 
 import { authorizeServerFetch } from "../core/server"
 
-export const getAllUsersAdmin =async()=>{
+export const getUserListOfAdmin =async()=>{
     return authorizeServerFetch("/api/dashboard/admin/all/users", "admin")
 }
