@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSession } from "@/lib/auth-client";
-import { updateProfile } from "@/actions/users";
-import { getAuthorLessons } from "@/actions/lessons";
+import { authClient, useSession } from "@/lib/auth-client";
 import { User, Award, Mail, Calendar, Eye, Bookmark, Sparkles, BookOpen, Save, FileEdit } from "lucide-react";
 import toast from "react-hot-toast";
+import Image from "next/image";
+import { getUserLesson } from "@/lib/api/lesson";
+import Link from "next/link";
+import { updateProfile } from "@/lib/action/profile";
 
 export default function Profile() {
   const { data: session, update } = useSession();
@@ -29,7 +31,8 @@ export default function Profile() {
     if (!session?.user?.id) return;
     setLoadingLessons(true);
     try {
-      const data = await getAuthorLessons(session.user.id);
+      const data = await getUserLesson(session.user.id);
+
       setLessons(data || []);
     } catch (err) {
       console.error("Failed to load user lessons:", err);
@@ -48,16 +51,17 @@ export default function Profile() {
 
     setUpdating(true);
     try {
-      const res = await updateProfile({ name, image: photo });
-      if (res.error) {
-        toast.error(res.error);
+      // Better Auth-এর বিল্ট-ইন updateUser সরাসরি কল করুন
+      const { data, error } = await authClient.updateUser({
+        name: name,
+        image: photo,
+        updatedAt: new Date(),
+      });
+
+      if (error) {
+        toast.error(error.message || "Failed to update profile");
       } else {
         toast.success("Profile updated successfully!");
-        // Update Better Auth local session
-        await update({
-          name: name,
-          image: photo
-        });
       }
     } catch (err) {
       toast.error("Something went wrong");
@@ -65,6 +69,34 @@ export default function Profile() {
       setUpdating(false);
     }
   };
+  // const handleUpdate = async (e) => {
+  //   e.preventDefault();
+  //   if (!name.trim()) {
+  //     toast.error("Name is required");
+  //     return;
+  //   }
+
+  //   setUpdating(true);
+  //   try {
+  //     const res = await updateProfile({ name, image: photo });
+  //     if (res.error) {
+  //       toast.error(res.error);
+  //     } else {
+  //       toast.success("Profile updated successfully!");
+  //       // Update Better Auth local session
+  //       await update({
+  //         name: name,
+  //         image: photo,
+  //       });
+  //     }
+  //   } catch (err) {
+  //     toast.error("Something went wrong");
+  //   } finally {
+  //     setUpdating(false);
+  //   }
+  // };
+
+
 
   if (!session) return null;
 
@@ -74,12 +106,8 @@ export default function Profile() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">
-          My Profile Dashboard
-        </h1>
-        <p className="text-xs text-slate-400 mt-1">
-          Review your stats, update your public persona, and inspect your published reflections.
-        </p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">My Profile Dashboard</h1>
+        <p className="text-xs text-slate-400 mt-1">Review your stats, update your public persona, and inspect your published reflections.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -92,15 +120,11 @@ export default function Profile() {
                 <Award size={20} className="animate-pulse" />
               </div>
             )}
-            
+
             <div className="w-20 h-20 rounded-2xl overflow-hidden bg-slate-700 mx-auto flex items-center justify-center text-white font-bold text-3xl border-2 border-indigo-500/20 shadow-md">
-              {photo ? (
-                <img src={photo} alt={name} className="w-full h-full object-cover" />
-              ) : (
-                name?.charAt(0).toUpperCase()
-              )}
+              {photo ? <Image src={photo} height={50} width={50} alt={name} className="w-full h-full object-cover" /> : name?.charAt(0).toUpperCase()}
             </div>
-            
+
             <div>
               <h3 className="font-bold text-lg text-slate-200">{name || "Anonymous User"}</h3>
               <div className="flex items-center justify-center gap-1.5 mt-1.5">
@@ -109,9 +133,7 @@ export default function Profile() {
                     <Sparkles size={8} /> Premium ⭐
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 text-[10px] bg-slate-800 text-slate-400 font-bold px-2 py-0.5 rounded-full">
-                    Free Plan
-                  </span>
+                  <span className="inline-flex items-center gap-1 text-[10px] bg-slate-800 text-slate-400 font-bold px-2 py-0.5 rounded-full">Free Plan</span>
                 )}
               </div>
             </div>
@@ -128,6 +150,20 @@ export default function Profile() {
             </div>
           </div>
 
+          {/* Number of total lessons and favorites */}
+          <div className="p-5 rounded-2xl bg-slate-800/20 border border-slate-700/30 text-center space-y-4 relative overflow-hidden">
+            <div className="pt-4 border-t border-slate-800/40 text-left text-xs text-slate-400 space-y-2">
+              <div className="flex items-center space-x-2">
+                <Bookmark size={13} className="text-indigo-400" />
+                <span className="truncate">Total Favorites: {lessons?.totalFavorite}</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <BookOpen size={13} className="text-indigo-400" />
+                <span>Total lesson posted: {lessons?.totalLesson}</span>
+              </div>
+            </div>
+          </div>
+
           {/* Edit Form */}
           <form onSubmit={handleUpdate} className="p-5 rounded-2xl bg-slate-800/20 border border-slate-700/30 space-y-4">
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
@@ -136,9 +172,7 @@ export default function Profile() {
 
             {/* Display Name */}
             <div>
-              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">
-                Display Name
-              </label>
+              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Display Name</label>
               <input
                 type="text"
                 required
@@ -151,9 +185,7 @@ export default function Profile() {
 
             {/* Photo URL */}
             <div>
-              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">
-                Avatar Photo URL
-              </label>
+              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Avatar Photo URL</label>
               <input
                 type="url"
                 value={photo}
@@ -165,9 +197,7 @@ export default function Profile() {
 
             {/* Locked Email display */}
             <div>
-              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">
-                Email Address (ReadOnly)
-              </label>
+              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">Email Address (ReadOnly)</label>
               <input
                 type="text"
                 disabled
@@ -197,24 +227,21 @@ export default function Profile() {
         {/* Public Lessons Grid */}
         <div className="lg:col-span-2 space-y-4">
           <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-            <BookOpen size={16} className="text-indigo-400" /> My Public Lessons ({lessons.length})
+            <BookOpen size={16} className="text-indigo-400" /> My Public Lessons ({lessons?.totalLesson})
           </h3>
 
           {loadingLessons ? (
             <div className="flex justify-center py-10">
               <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent animate-spin rounded-full" />
             </div>
-          ) : lessons.length === 0 ? (
+          ) : lessons.lessons.length === 0 ? (
             <div className="text-center py-16 bg-slate-800/10 border border-slate-700/20 rounded-2xl p-6 text-slate-400 text-xs">
               No public lessons published by you. Adjust visibility in your library to share with the community.
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {lessons.map((item) => (
-                <div
-                  key={item._id}
-                  className="p-5 rounded-2xl bg-slate-800/20 border border-slate-700/30 flex flex-col justify-between h-[200px]"
-                >
+              {lessons.lessons.map((item) => (
+                <div key={item._id} className="p-5 rounded-2xl bg-slate-800/20 border border-slate-700/30 flex flex-col justify-between h-50">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-[10px]">
                       <span className="font-semibold text-indigo-400 uppercase">{item.category}</span>
@@ -224,13 +251,12 @@ export default function Profile() {
                     <p className="text-slate-400 text-[11px] line-clamp-3">{item.description}</p>
                   </div>
                   <div className="pt-3 border-t border-slate-800/40 flex items-center justify-between text-[10px]">
-                    <span className="font-semibold text-slate-500">{item.likesCount} Likes / {item.favoritesCount} Saved</span>
-                    <a
-                      href={`/lessons/${item._id}`}
-                      className="px-2.5 py-1 rounded bg-slate-800 hover:bg-indigo-500 text-slate-300 hover:text-white transition-colors"
-                    >
+                    <span className="font-semibold text-slate-500">
+                      {item.likesCount} Likes / {item.favoritesCount} Saved
+                    </span>
+                    <Link href={`/public-lessons/${item._id}`} className="px-2.5 py-1 rounded bg-slate-800 hover:bg-indigo-500 text-slate-300 hover:text-white transition-colors">
                       Read
-                    </a>
+                    </Link>
                   </div>
                 </div>
               ))}

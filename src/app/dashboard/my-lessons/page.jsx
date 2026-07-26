@@ -44,7 +44,6 @@ export default function MyLessons() {
     loadLessons();
   }, [userId]);
 
-  console.log(lessons, "User's public lessons");
 
   // Handle visibility toggle directly in table
   const handleToggleVisibility = async (lesson) => {
