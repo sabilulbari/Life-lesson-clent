@@ -102,10 +102,12 @@ export default function Profile() {
   const isPremium = session.user.plan === "premium";
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 ">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">My Profile Dashboard</h1>
+        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight font-display bg-linear-to-r from-indigo-500 to-cyan-500 bg-clip-text text-transparent">
+          My Profile Dashboard
+        </h1>
         <p className="text-xs text-slate-400 mt-1">Review your stats, update your public persona, and inspect your published reflections.</p>
       </div>
 
@@ -113,7 +115,7 @@ export default function Profile() {
         {/* Profile Card & Edit Form */}
         <div className="lg:col-span-1 space-y-6">
           {/* Avatar Details */}
-          <div className="p-5 rounded-2xl bg-slate-800/20 border border-slate-700/30 text-center space-y-4 relative overflow-hidden">
+          <div className="p-5 rounded-2xl bg-indigo-800/10 border border-indigo-700/30 text-center space-y-4 relative overflow-hidden">
             {isPremium && (
               <div className="absolute top-3 right-3 text-indigo-400" title="Premium member">
                 <Award size={20} className="animate-pulse" />
@@ -125,10 +127,10 @@ export default function Profile() {
             </div>
 
             <div>
-              <h3 className="font-bold text-lg text-slate-200">{name || "Anonymous User"}</h3>
+              <h3 className="font-bold text-lg text-slate-700/90 dark:text-indigo-400">{name || "Anonymous User"}</h3>
               <div className="flex items-center justify-center gap-1.5 mt-1.5">
                 {isPremium ? (
-                  <span className="inline-flex items-center gap-1 text-[10px] bg-indigo-500/25 text-indigo-400 font-bold px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[10px] bg-indigo-500/25 text-white dark:text-indigo-400 font-bold px-2 py-0.5 rounded-full">
                     <Sparkles size={8} /> Premium ⭐
                   </span>
                 ) : (
@@ -137,7 +139,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-800/40 text-left text-xs text-slate-400 space-y-2">
+            <div className="pt-4 border-t border-slate-800/40 text-left text-xs text-slate-700/90 dark:text-slate-400 space-y-2">
               <div className="flex items-center space-x-2">
                 <Mail size={13} className="text-indigo-400" />
                 <span className="truncate">{session.user.email}</span>
@@ -150,8 +152,8 @@ export default function Profile() {
           </div>
 
           {/* Number of total lessons and favorites */}
-          <div className="p-5 rounded-2xl bg-slate-800/20 border border-slate-700/30 text-center space-y-4 relative overflow-hidden">
-            <div className="pt-4 border-t border-slate-800/40 text-left text-xs text-slate-400 space-y-2">
+          <div className="p-5 rounded-2xl bg-indigo-800/10 border border-indigo-700/30 text-center space-y-4 relative overflow-hidden">
+            <div className="border-slate-800/40 text-left text-xs text-slate-700/90 dark:text-slate-400 space-y-2">
               <div className="flex items-center space-x-2">
                 <Bookmark size={13} className="text-indigo-400" />
                 <span className="truncate">Total Favorites: {lessons?.totalFavorite}</span>
@@ -164,7 +166,7 @@ export default function Profile() {
           </div>
 
           {/* Edit Form */}
-          <form onSubmit={handleUpdate} className="p-5 rounded-2xl bg-slate-800/20 border border-slate-700/30 space-y-4">
+          <form onSubmit={handleUpdate} className="p-5 rounded-2xl bg-indigo-800/10 border border-indigo-700/30 space-y-4">
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
               <FileEdit size={13} /> Update Details
             </h3>
