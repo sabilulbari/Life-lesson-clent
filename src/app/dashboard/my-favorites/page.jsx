@@ -86,14 +86,14 @@ export default function MyFavorites() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">Saved Favorites</h1>
+        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight font-display bg-linear-to-r from-indigo-500 to-cyan-500 bg-clip-text text-transparent">Saved Favorites</h1>
         <p className="text-xs text-slate-400 mt-1">A dedicated bookshelf of insights and personal wisdom you've collected from other creators.</p>
       </div>
 
       {/* Local Filter Bar */}
       <div className="flex flex-wrap items-center gap-3 p-4 rounded-xl bg-slate-800/20 border border-slate-700/30 text-xs">
         <div className="flex items-center space-x-2">
-          <span className="text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1">
+          <span className="text-slate-700 dark:text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1">
             <Folder size={12} /> Category:
           </span>
           <select
@@ -111,7 +111,7 @@ export default function MyFavorites() {
         </div>
 
         <div className="flex items-center space-x-2">
-          <span className="text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1">
+          <span className="text-slate-700 dark:text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1">
             <Sparkles size={12} /> Tone:
           </span>
           <select value={tone} onChange={(e) => setTone(e.target.value)} className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700/50 text-slate-200 cursor-pointer">
@@ -145,14 +145,14 @@ export default function MyFavorites() {
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 bg-slate-800/10 border border-slate-700/20 rounded-2xl p-6">
           <BookmarkMinus size={36} className="mx-auto text-slate-600 mb-2" />
-          <p className="text-sm text-slate-400">No favorited lessons match your selection.</p>
+          <p className="text-sm text-slate-700 dark:text-slate-400">No favorited lessons match your selection.</p>
         </div>
       ) : (
         /* Table of favorites */
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-slate-800/40 text-slate-400 font-bold uppercase tracking-wider">
+              <tr className="border-b border-slate-800/40 text-slate-600/80 dark:text-slate-400 font-bold uppercase tracking-wider">
                 <th className="py-3 px-2">Lesson Title</th>
                 <th className="py-3 px-2">Category</th>
                 <th className="py-3 px-2">Emotional Tone</th>
@@ -163,11 +163,11 @@ export default function MyFavorites() {
             <tbody className="divide-y divide-slate-800/20 text-slate-300">
               {filtered.map((item) => (
                 <tr key={item._id} className="hover:bg-slate-800/10 transition-colors">
-                  <td className="py-3 px-2 max-w-50 truncate font-bold text-slate-200">{item.title}</td>
-                  <td className="py-3 px-2">{item.category}</td>
-                  <td className="py-3 px-2">{item.emotionalTone}</td>
-                  <td className="py-3 px-2 font-medium">{item.creatorName}</td>
-                  <td className="py-3 px-2 text-center">
+                  <td className="py-3 px-2 max-w-50 truncate font-bold text-slate-700/70 dark:text-slate-400">{item.title}</td>
+                  <td className="py-3 px-2 text-slate-700/70 dark:text-slate-400">{item.category}</td>
+                  <td className="py-3 px-2 text-slate-700/70 dark:text-slate-400">{item.emotionalTone}</td>
+                  <td className="py-3 px-2 text-slate-700/70 dark:text-slate-400 font-medium">{item.creatorName}</td>
+                  <td className="py-3 px-2  text-center">
                     <div className="flex items-center justify-center space-x-2">
                       <Link
                         href={`/public-lessons/${item.lessonId}`}
@@ -179,7 +179,7 @@ export default function MyFavorites() {
 
                       <button
                         onClick={() => handleRemoveFavorite(item)}
-                        className="p-1.5 rounded bg-slate-800 hover:bg-rose-500/15 border border-slate-700/30 text-slate-400 hover:text-rose-400 transition-colors"
+                        className="p-1.5 rounded bg-slate-800 hover:bg-rose-500/15 border border-slate-700/30 text-slate-400 hover:text-rose-400 transition-colors cursor-pointer"
                         title="Remove Bookmark"
                       >
                         <BookmarkMinus size={12} />

@@ -76,7 +76,9 @@ export default function AddLesson() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">Share Your Realization</h1>
+        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight font-display bg-linear-to-r from-indigo-500 to-cyan-500 bg-clip-text text-transparent">
+          Share Your Realization
+        </h1>
         <p className="text-xs text-slate-400 mt-1">Document your personal growth or milestones and help inspire the community.</p>
       </div>
 
@@ -84,7 +86,7 @@ export default function AddLesson() {
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Title */}
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Lesson Title *</label>
+          <label className="block text-xs font-semibold text-slate-700/70 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Lesson Title *</label>
           <input
             type="text"
             name="title"
@@ -92,14 +94,14 @@ export default function AddLesson() {
             value={formData.title}
             onChange={handleChange}
             placeholder="e.g. Failure is the Best Teacher in Software Engineering"
-            className="w-full px-4 py-2.5 rounded-xl bg-slate-800/40 border border-slate-700/50 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none text-sm text-[var(--foreground)] transition-all"
+            className="w-full px-4 py-2.5 rounded-xl bg-slate-800/40 border border-slate-700/50 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none text-sm text-foreground transition-all"
           />
         </div>
 
         {/* Category & Emotional Tone */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Category *</label>
+            <label className="block text-xs font-semibold text-slate-700/70 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Category *</label>
             <select
               name="category"
               value={formData.category}
@@ -115,7 +117,7 @@ export default function AddLesson() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Emotional Tone *</label>
+            <label className="block text-xs font-semibold text-slate-700/70 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Emotional Tone *</label>
             <select
               name="emotionalTone"
               value={formData.emotionalTone}
@@ -135,7 +137,7 @@ export default function AddLesson() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Image (Optional) */}
           <div className="sm:col-span-1">
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Featured Image URL</label>
+            <label className="block text-xs font-semibold text-slate-700/70 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Featured Image URL</label>
             <input
               type="url"
               name="image"
@@ -148,7 +150,7 @@ export default function AddLesson() {
 
           {/* Access Level (Premium toggle restricted) */}
           <div className="sm:col-span-1 relative">
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide flex items-center gap-1">
+            <label className="block text-xs font-semibold text-slate-700/70 dark:text-slate-400 mb-1.5 uppercase tracking-wide flex items-center gap-1">
               Access Level
               {!isPremiumUser && (
                 <HelpCircle size={12} className="text-slate-500 cursor-help" onMouseEnter={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)} />
@@ -175,7 +177,7 @@ export default function AddLesson() {
 
           {/* Visibility */}
           <div className="sm:col-span-1">
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Visibility</label>
+            <label className="block text-xs font-semibold text-slate-700/70 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Visibility</label>
             <select
               name="visibility"
               value={formData.visibility}
@@ -190,7 +192,7 @@ export default function AddLesson() {
 
         {/* Description / Stories */}
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wide">Full Description / Story / Insight *</label>
+          <label className="block text-xs font-semibold text-slate-700/70 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Full Description / Story / Insight *</label>
           <textarea
             name="description"
             required

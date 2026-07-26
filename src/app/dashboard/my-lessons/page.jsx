@@ -146,7 +146,9 @@ export default function MyLessons() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-800 dark:text-slate-200">My Lessons Library</h1>
+        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight font-display bg-linear-to-r from-indigo-500 to-cyan-500 bg-clip-text text-transparent">
+          My Lessons Library
+        </h1>
         <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Manage your entries, toggle privacy settings, and inspect readers engagement.</p>
       </div>
 

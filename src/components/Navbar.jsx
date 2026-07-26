@@ -75,7 +75,7 @@ export default function Navbar() {
           {/* Logo Section */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-400 flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-indigo-500/20">
+              <div className="w-9 h-9 rounded-xl bg-linear-to-tr from-indigo-500 to-cyan-400 flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-indigo-500/20">
                 L
               </div>
               <span className="font-bold text-xl tracking-tight font-display bg-linear-to-r from-indigo-500 to-cyan-500 bg-clip-text text-transparent">Life Lessons</span>

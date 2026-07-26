@@ -51,7 +51,6 @@ export default function Profile() {
 
     setUpdating(true);
     try {
-      // Better Auth-এর বিল্ট-ইন updateUser সরাসরি কল করুন
       const { data, error } = await authClient.updateUser({
         name: name,
         image: photo,
