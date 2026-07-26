@@ -167,7 +167,7 @@ export default function Profile() {
 
           {/* Edit Form */}
           <form onSubmit={handleUpdate} className="p-5 rounded-2xl bg-indigo-800/10 border border-indigo-700/30 space-y-4">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+            <h3 className="text-xs font-bold text-slate-700/90 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1">
               <FileEdit size={13} /> Update Details
             </h3>
 
@@ -227,7 +227,7 @@ export default function Profile() {
 
         {/* Public Lessons Grid */}
         <div className="lg:col-span-2 space-y-4">
-          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
             <BookOpen size={16} className="text-indigo-400" /> My Public Lessons ({lessons?.totalLesson})
           </h3>
 
@@ -242,13 +242,13 @@ export default function Profile() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {lessons.lessons.map((item) => (
-                <div key={item._id} className="p-5 rounded-2xl bg-slate-800/20 border border-slate-700/30 flex flex-col justify-between h-50">
+                <div key={item._id} className="p-5 rounded-2xl bg-indigo-800/10 border border-indigo-700/30 flex flex-col justify-between h-50">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-[10px]">
                       <span className="font-semibold text-indigo-400 uppercase">{item.category}</span>
                       <span className="text-slate-500">{new Date(item.createdAt).toLocaleDateString()}</span>
                     </div>
-                    <h4 className="font-bold text-sm text-slate-200 line-clamp-2">{item.title}</h4>
+                    <h4 className="font-bold text-sm text-slate-700/90 dark:text-slate-400 line-clamp-2">{item.title}</h4>
                     <p className="text-slate-400 text-[11px] line-clamp-3">{item.description}</p>
                   </div>
                   <div className="pt-3 border-t border-slate-800/40 flex items-center justify-between text-[10px]">
