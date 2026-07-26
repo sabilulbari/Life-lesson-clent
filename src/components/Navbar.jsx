@@ -59,13 +59,13 @@ export default function Navbar() {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Public Lessons", href: "/public-lessons" },
-    ...(session
+    ...(session && !isAdminUser
       ? [
           { name: "Add Lesson", href: "/dashboard/add-lesson" },
           { name: "My Lessons", href: "/dashboard/my-lessons" },
         ]
       : []),
-    ...(isFreeUser ? [{ name: "Pricing / Upgrade", href: "/pricing" }] : []),
+    ...(isFreeUser && !isAdminUser ? [{ name: "Pricing / Upgrade", href: "/pricing" }] : []),
   ];
 
   return (

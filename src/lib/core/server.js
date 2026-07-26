@@ -30,6 +30,19 @@ export const serverFetch = async (path) => {
   return res.json();
 };
 
+
+export const authorizeServerFetch = async (path, role) => {
+  const authHeaders = await getAuthHeaders();
+  if (!authHeaders["x-user-id"] || authHeaders["x-user-role"] !== role) return [];
+  const res = await fetch(`${baseUrl}${path}`,{
+    headers:{
+      "Content-Type": "application/json",
+      ...authHeaders,
+    }
+  });
+  return res.json();
+};
+
 export const serverMutation = async (path, data, method = "POST") => {
   try {
     const authHeaders = await getAuthHeaders();
