@@ -6,6 +6,7 @@ import { useSession } from "@/lib/auth-client";
 import { UserCheck, Trash2, ShieldCheck, Mail, ShieldAlert } from "lucide-react";
 import toast from "react-hot-toast";
 import { getUserListOfAdmin } from "@/lib/api/AdminAllUsers";
+import Image from "next/image";
 
 export default function ManageUsers() {
   const { data: session } = useSession();
@@ -113,7 +114,7 @@ export default function ManageUsers() {
                   <td className="py-3 px-2">
                     <div className="flex items-center space-x-2.5">
                       <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-700 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                        {u.image ? <img src={u.image} alt={u.name} className="w-full h-full object-cover" /> : u.name?.charAt(0).toUpperCase()}
+                        {u.image ? <Image src={u.image} height={20} width={20} alt={u.name} className="w-full h-full object-cover" /> : u.name?.charAt(0).toUpperCase()}
                       </div>
                       <span className="font-bold text-slate-200">{u.name}</span>
                     </div>
