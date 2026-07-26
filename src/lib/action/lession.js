@@ -1,7 +1,7 @@
-"use server"
+"use server";
 
-import { serverMutatoion } from "../core/server"
+import { serverMutation } from "../core/server";
 
 export const createLesson = async (data) => {
-  return await serverMutatoion("/api/user/dashboard/add/lesson", data);
+  return await serverMutation("/api/user/dashboard/add/lesson", data);
 };

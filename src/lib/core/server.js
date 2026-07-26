@@ -1,4 +1,4 @@
-"use server"
+"use server";
 import { headers } from "next/headers";
 import auth from "../auth";
 
@@ -30,8 +30,7 @@ export const serverFetch = async (path) => {
   return res.json();
 };
 
-
-export const serverMutatoion = async (path, data, method = "POST") => {
+export const serverMutation = async (path, data, method = "POST") => {
   try {
     const authHeaders = await getAuthHeaders();
     if (!authHeaders["x-user-id"]) return { error: "Unauthorized" };

@@ -27,10 +27,7 @@ export default function MyLessons() {
 
   const isPremiumUser = session?.user?.plan === "premium";
 
-  const userId = session?.user?.id
-
-
-
+  const userId = session?.user?.id;
 
   useEffect(() => {
     const loadLessons = async () => {
@@ -46,6 +43,8 @@ export default function MyLessons() {
     };
     loadLessons();
   }, [userId]);
+
+  console.log(lessons, "User's public lessons");
 
   // Handle visibility toggle directly in table
   const handleToggleVisibility = async (lesson) => {
@@ -148,19 +147,19 @@ export default function MyLessons() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">My Lessons Library</h1>
-        <p className="text-xs text-slate-400 mt-1">Manage your entries, toggle privacy settings, and inspect readers engagement.</p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-800 dark:text-slate-200">My Lessons Library</h1>
+        <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Manage your entries, toggle privacy settings, and inspect readers engagement.</p>
       </div>
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20">
           <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent animate-spin rounded-full mb-3" />
-          <span className="text-xs text-slate-400">Loading your library...</span>
+          <span className="text-xs text-slate-600 dark:text-slate-400">Loading your library...</span>
         </div>
-      ) : lessons.length === 0 ? (
+      ) : lessons.lessons.length === 0 ? (
         <div className="text-center py-16 bg-slate-800/10 border border-slate-700/20 rounded-2xl p-6">
-          <Globe size={36} className="mx-auto text-slate-600 mb-2" />
-          <p className="text-sm text-slate-400">No lessons created yet.</p>
+          <Globe size={36} className="mx-auto text-slate-500 dark:text-slate-600 mb-2" />
+          <p className="text-sm text-slate-600 dark:text-slate-400">No lessons created yet.</p>
           <Link href="/dashboard/add-lesson" className="inline-block mt-4 px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl text-xs font-semibold">
             Create Your First Lesson
           </Link>
@@ -170,7 +169,7 @@ export default function MyLessons() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-slate-800/40 text-slate-400 font-bold uppercase tracking-wider">
+              <tr className="border-b border-slate-300 dark:border-slate-800/40 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">
                 <th className="py-3 px-2">Title</th>
                 <th className="py-3 px-2">Category</th>
                 <th className="py-3 px-2 text-center">Visibility</th>
@@ -179,18 +178,20 @@ export default function MyLessons() {
                 <th className="py-3 px-2 text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/20 text-slate-300">
-              {lessons.map((lesson) => (
-                <tr key={lesson._id} className="hover:bg-slate-800/10 transition-colors">
-                  <td className="py-3 px-2 max-w-[200px] truncate font-bold text-slate-200">{lesson.title}</td>
-                  <td className="py-3 px-2">{lesson.category}</td>
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800/20 text-slate-700 dark:text-slate-300">
+              {lessons.lessons.map((lesson) => (
+                <tr key={lesson._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/10 transition-colors">
+                  <td className="py-3 px-2 max-w-50 truncate font-bold text-slate-900 dark:text-slate-200">{lesson.title}</td>
+                  <td className="py-3 px-2 text-slate-900 dark:text-slate-200">{lesson.category}</td>
 
                   {/* Visibility Toggler */}
                   <td className="py-3 px-2 text-center">
                     <button
                       onClick={() => handleToggleVisibility(lesson)}
                       className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg border font-semibold ${
-                        lesson.visibility === "Public" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-slate-800 text-slate-400 border-slate-700/50"
+                        lesson.visibility === "Public"
+                          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-700/50"
                       }`}
                     >
                       <Globe size={11} />
@@ -203,7 +204,9 @@ export default function MyLessons() {
                     <button
                       onClick={() => handleToggleAccess(lesson)}
                       className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg border font-semibold ${
-                        lesson.accessLevel === "Premium" ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20" : "bg-slate-800 text-slate-400 border-slate-700/50"
+                        lesson.accessLevel === "Premium"
+                          ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-700/50"
                       }`}
                     >
                       {lesson.accessLevel === "Premium" ? <Lock size={11} /> : <Unlock size={11} />}
@@ -212,7 +215,7 @@ export default function MyLessons() {
                   </td>
 
                   {/* Stats */}
-                  <td className="py-3 px-2 text-center font-bold">
+                  <td className="py-3 px-2 text-center font-bold text-slate-800 dark:text-slate-200">
                     {lesson.likesCount} ❤️ / {lesson.favoritesCount} 🔖
                   </td>
 
@@ -220,8 +223,8 @@ export default function MyLessons() {
                   <td className="py-3 px-2 text-center">
                     <div className="flex items-center justify-center space-x-2">
                       <Link
-                        href={`/lessons/${lesson._id}`}
-                        className="p-1.5 rounded bg-slate-850 hover:bg-indigo-500/10 border border-slate-700/30 text-slate-400 hover:text-indigo-400 transition-colors"
+                        href={`/public-lessons/${lesson._id}`}
+                        className="p-1.5 rounded  dark:bg-slate-850 hover:bg-indigo-500/10 border border-slate-300 dark:border-slate-700/30 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                         title="Read Lesson Details"
                       >
                         <Eye size={12} />
@@ -229,7 +232,7 @@ export default function MyLessons() {
 
                       <button
                         onClick={() => openEditModal(lesson)}
-                        className="p-1.5 rounded bg-slate-850 hover:bg-amber-500/10 border border-slate-700/30 text-slate-400 hover:text-amber-400 transition-colors"
+                        className="p-1.5 rounded  dark:bg-slate-850 hover:bg-amber-500/10 border border-slate-300 dark:border-slate-700/30 text-slate-600 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer"
                         title="Edit Lesson"
                       >
                         <Edit2 size={12} />
@@ -237,7 +240,7 @@ export default function MyLessons() {
 
                       <button
                         onClick={() => setDeleteId(lesson._id)}
-                        className="p-1.5 rounded bg-slate-850 hover:bg-rose-500/10 border border-slate-700/30 text-slate-400 hover:text-rose-400 transition-colors"
+                        className="p-1.5 rounded  dark:bg-slate-850 hover:bg-rose-500/10 border border-slate-300 dark:border-slate-700/30 text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer"
                         title="Delete Permanently"
                       >
                         <Trash2 size={12} />
@@ -254,15 +257,15 @@ export default function MyLessons() {
       {/* Edit Lesson Modal */}
       {editModalOpen && editData && (
         <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl glass rounded-3xl border border-[var(--card-border)] p-6 space-y-4 max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800/40">
-              <h3 className="text-lg font-bold font-display text-slate-200">Update Life Lesson</h3>
+          <div className="w-full max-w-2xl glass bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-[var(--card-border)] p-6 space-y-4 max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800/40">
+              <h3 className="text-lg font-bold font-display text-slate-900 dark:text-slate-200">Update Life Lesson</h3>
               <button
                 onClick={() => {
                   setEditModalOpen(false);
                   setEditData(null);
                 }}
-                className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white"
+                className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               >
                 <X size={16} />
               </button>
@@ -271,24 +274,24 @@ export default function MyLessons() {
             <form onSubmit={handleEditSubmit} className="space-y-4">
               {/* Title */}
               <div>
-                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Lesson Title *</label>
+                <label className="block text-[10px] font-bold text-slate-700 dark:text-slate-400 uppercase tracking-wide mb-1">Lesson Title *</label>
                 <input
                   type="text"
                   required
                   value={editData.title}
                   onChange={(e) => setEditData({ ...editData, title: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-850 border border-slate-700/50 outline-none text-xs text-[var(--foreground)] focus:border-indigo-500"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-300 dark:border-slate-700/50 outline-none text-xs text-slate-900 dark:text-background focus:border-indigo-500"
                 />
               </div>
 
               {/* Category & Tone */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Category</label>
+                  <label className="block text-[10px] font-bold text-slate-700 dark:text-slate-400 uppercase tracking-wide mb-1">Category</label>
                   <select
                     value={editData.category}
                     onChange={(e) => setEditData({ ...editData, category: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-850 border border-slate-700/50 outline-none text-xs text-[var(--foreground)] focus:border-indigo-500 cursor-pointer"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-300 dark:border-slate-700/50 outline-none text-xs text-slate-900 dark:text-background focus:border-indigo-500 cursor-pointer"
                   >
                     {CATEGORIES.map((c) => (
                       <option key={c} value={c}>
@@ -298,11 +301,11 @@ export default function MyLessons() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Emotional Tone</label>
+                  <label className="block text-[10px] font-bold text-slate-700 dark:text-slate-400 uppercase tracking-wide mb-1">Emotional Tone</label>
                   <select
                     value={editData.emotionalTone}
                     onChange={(e) => setEditData({ ...editData, emotionalTone: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-850 border border-slate-700/50 outline-none text-xs text-[var(--foreground)] focus:border-indigo-500 cursor-pointer"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-300 dark:border-slate-700/50 outline-none text-xs text-slate-900 dark:text-background focus:border-indigo-500 cursor-pointer"
                   >
                     {TONES.map((t) => (
                       <option key={t} value={t}>
@@ -316,35 +319,35 @@ export default function MyLessons() {
               {/* Image & Visibility & Access */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Image URL</label>
+                  <label className="block text-[10px] font-bold text-slate-700 dark:text-slate-400 uppercase tracking-wide mb-1">Image URL</label>
                   <input
                     type="url"
                     value={editData.image}
                     onChange={(e) => setEditData({ ...editData, image: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-850 border border-slate-700/50 outline-none text-xs text-[var(--foreground)] focus:border-indigo-500"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-300 dark:border-slate-700/50 outline-none text-xs text-slate-900 dark:text-background focus:border-indigo-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Visibility</label>
+                  <label className="block text-[10px] font-bold text-slate-700 dark:text-slate-400 uppercase tracking-wide mb-1">Visibility</label>
                   <select
                     value={editData.visibility}
                     onChange={(e) => setEditData({ ...editData, visibility: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-850 border border-slate-700/50 outline-none text-xs text-[var(--foreground)] focus:border-indigo-500 cursor-pointer"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-300 dark:border-slate-700/50 outline-none text-xs text-slate-900 dark:text-background focus:border-indigo-500 cursor-pointer"
                   >
                     <option value="Public">Public</option>
                     <option value="Private">Private</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1 flex items-center gap-1">
+                  <label className="block text-[10px] font-bold text-slate-700 dark:text-slate-400 uppercase tracking-wide mb-1 flex items-center gap-1">
                     Access Level
-                    {!isPremiumUser && <HelpCircle size={10} className="text-slate-500" />}
+                    {!isPremiumUser && <HelpCircle size={10} className="text-slate-400 dark:text-slate-500" />}
                   </label>
                   <select
                     value={editData.accessLevel}
                     onChange={(e) => setEditData({ ...editData, accessLevel: e.target.value })}
                     disabled={!isPremiumUser}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-850 border border-slate-700/50 outline-none text-xs text-[var(--foreground)] focus:border-indigo-500 disabled:opacity-50 cursor-pointer"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-300 dark:border-slate-700/50 outline-none text-xs text-slate-900 dark:text-background focus:border-indigo-500 disabled:opacity-50 cursor-pointer"
                   >
                     <option value="Free">Free</option>
                     <option value="Premium">Premium</option>
@@ -354,13 +357,13 @@ export default function MyLessons() {
 
               {/* Description */}
               <div>
-                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Story / Insight Content *</label>
+                <label className="block text-[10px] font-bold text-slate-700 dark:text-slate-400 uppercase tracking-wide mb-1">Story / Insight Content *</label>
                 <textarea
                   rows={6}
                   required
                   value={editData.description}
                   onChange={(e) => setEditData({ ...editData, description: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-850 border border-slate-700/50 outline-none text-xs text-[var(--foreground)] focus:border-indigo-500 font-sans"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-300 dark:border-slate-700/50 outline-none text-xs text-slate-900 dark:text-background focus:border-indigo-500 font-sans"
                 />
               </div>
 
@@ -372,14 +375,14 @@ export default function MyLessons() {
                     setEditModalOpen(false);
                     setEditData(null);
                   }}
-                  className="px-4 py-2 rounded-xl bg-slate-800 text-xs font-semibold text-slate-300 hover:bg-slate-750 transition-colors"
+                  className="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-750 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={updating}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 text-white font-semibold text-xs flex items-center space-x-1.5 active:scale-95 disabled:opacity-50"
+                  className="px-4 py-2 rounded-xl bg-linear-to-r from-indigo-500 to-cyan-500 text-white font-semibold text-xs flex items-center space-x-1.5 active:scale-95 disabled:opacity-50"
                 >
                   {updating ? (
                     <span className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full" />
@@ -399,18 +402,21 @@ export default function MyLessons() {
       {/* Delete Confirmation Popup */}
       {deleteId && (
         <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-sm glass rounded-3xl border border-[var(--card-border)] p-6 space-y-4 text-center animate-in zoom-in-95 duration-200">
+          <div className="w-full max-w-sm glass bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-(--card-border) p-6 space-y-4 text-center animate-in zoom-in-95 duration-200">
             <Trash2 size={36} className="text-rose-500 mx-auto" />
-            <h3 className="text-base font-bold text-slate-200">Delete Permanently?</h3>
-            <p className="text-xs text-slate-400">Are you sure you want to delete this life lesson? This action is irreversible.</p>
+            <h3 className="text-base font-bold text-slate-900 dark:text-slate-200">Delete Permanently?</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400">Are you sure you want to delete this life lesson? This action is irreversible.</p>
             <div className="flex items-center justify-center space-x-2 pt-2">
-              <button onClick={() => setDeleteId(null)} className="px-4 py-2 rounded-xl bg-slate-850 text-xs font-semibold text-slate-300 hover:bg-slate-750 transition-colors">
+              <button
+                onClick={() => setDeleteId(null)}
+                className="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-850 text-xs font-semibold text-slate-700 hover:bg-slate-300 dark:hover:bg-slate-750 transition-colors pointer cursor-pointer"
+              >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-semibold text-xs transition-colors flex items-center justify-center"
+                className="px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-semibold text-xs transition-colors cursor-pointer flex items-center justify-center"
               >
                 {deleting ? <span className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full" /> : <span>Delete Lesson</span>}
               </button>

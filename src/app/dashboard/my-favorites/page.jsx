@@ -1,15 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getMyFavorites, favoriteLesson } from "@/actions/lessons";
-import Link from "next/navigation";
+import { useEffect, useState, useCallback } from "react";
 import { Eye, BookmarkMinus, Folder, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
+import { authClient } from "@/lib/auth-client";
+import { getMyFavoritesLesson } from "@/lib/api/lesson";
+import Link from "next/link";
+import { favoriteLesson } from "@/actions/lessons";
+import { useRouter } from "next/navigation";
 
 const CATEGORIES = ["Personal Growth", "Career", "Relationships", "Mindset", "Mistakes Learned"];
 const TONES = ["Motivational", "Sad", "Realization", "Gratitude"];
 
 export default function MyFavorites() {
+  const { data: session, isPending } = authClient.useSession();
+  const router = useRouter();
   const [favorites, setFavorites] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,10 +23,13 @@ export default function MyFavorites() {
   const [category, setCategory] = useState("");
   const [tone, setTone] = useState("");
 
-  const loadFavorites = async () => {
+  const userId = session?.user?.id;
+
+  const loadFavorites = useCallback(async () => {
+    if (!userId) return;
     setLoading(true);
     try {
-      const data = await getMyFavorites();
+      const data = await getMyFavoritesLesson(userId);
       setFavorites(data || []);
       setFiltered(data || []);
     } catch (err) {
@@ -29,11 +37,15 @@ export default function MyFavorites() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
 
   useEffect(() => {
-    loadFavorites();
-  }, []);
+    if (!isPending && userId) {
+      loadFavorites();
+    } else if (!isPending && !userId) {
+      setLoading(false);
+    }
+  }, [userId, isPending, loadFavorites]);
 
   // Filter local data
   useEffect(() => {
@@ -48,16 +60,24 @@ export default function MyFavorites() {
   }, [category, tone, favorites]);
 
   // Remove from favorites handler
-  const handleRemoveFavorite = async (lessonId) => {
+  const handleRemoveFavorite = async (item) => {
+    // 1. Optimistic UI update for instant feedback
+    const previousFavorites = [...favorites];
+    setFavorites((prev) => prev.filter((f) => f.lessonId !== item.lessonId && f._id !== item._id));
+
     try {
-      const res = await favoriteLesson(lessonId);
-      if (res.error) {
+      const res = await favoriteLesson(item.lessonId);
+      if (res?.error) {
+        // Rollback state if server action returns an error
+        setFavorites(previousFavorites);
         toast.error(res.error);
       } else {
         toast.success("Removed from favorites");
-        setFavorites(favorites.filter((f) => f._id !== lessonId));
+        // Soft-refresh Next.js Server Component caches without forcing a full page reload
+        router.refresh();
       }
     } catch (err) {
+      setFavorites(previousFavorites);
       toast.error("Something went wrong");
     }
   };
@@ -66,12 +86,8 @@ export default function MyFavorites() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">
-          Saved Favorites
-        </h1>
-        <p className="text-xs text-slate-400 mt-1">
-          A dedicated bookshelf of insights and personal wisdom you've collected from other creators.
-        </p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">Saved Favorites</h1>
+        <p className="text-xs text-slate-400 mt-1">A dedicated bookshelf of insights and personal wisdom you've collected from other creators.</p>
       </div>
 
       {/* Local Filter Bar */}
@@ -87,7 +103,9 @@ export default function MyFavorites() {
           >
             <option value="">All Categories</option>
             {CATEGORIES.map((c) => (
-              <option key={c} value={c}>{c}</option>
+              <option key={c} value={c}>
+                {c}
+              </option>
             ))}
           </select>
         </div>
@@ -96,14 +114,12 @@ export default function MyFavorites() {
           <span className="text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1">
             <Sparkles size={12} /> Tone:
           </span>
-          <select
-            value={tone}
-            onChange={(e) => setTone(e.target.value)}
-            className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700/50 text-slate-200 cursor-pointer"
-          >
+          <select value={tone} onChange={(e) => setTone(e.target.value)} className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700/50 text-slate-200 cursor-pointer">
             <option value="">All Tones</option>
             {TONES.map((t) => (
-              <option key={t} value={t}>{t}</option>
+              <option key={t} value={t}>
+                {t}
+              </option>
             ))}
           </select>
         </div>
@@ -147,24 +163,22 @@ export default function MyFavorites() {
             <tbody className="divide-y divide-slate-800/20 text-slate-300">
               {filtered.map((item) => (
                 <tr key={item._id} className="hover:bg-slate-800/10 transition-colors">
-                  <td className="py-3 px-2 max-w-[200px] truncate font-bold text-slate-200">
-                    {item.title}
-                  </td>
+                  <td className="py-3 px-2 max-w-50 truncate font-bold text-slate-200">{item.title}</td>
                   <td className="py-3 px-2">{item.category}</td>
                   <td className="py-3 px-2">{item.emotionalTone}</td>
                   <td className="py-3 px-2 font-medium">{item.creatorName}</td>
                   <td className="py-3 px-2 text-center">
                     <div className="flex items-center justify-center space-x-2">
-                      <a
-                        href={`/lessons/${item._id}`}
+                      <Link
+                        href={`/public-lessons/${item.lessonId}`}
                         className="p-1.5 rounded bg-slate-800 hover:bg-indigo-500/15 border border-slate-700/30 text-slate-400 hover:text-indigo-400 transition-colors"
                         title="Read Details"
                       >
                         <Eye size={12} />
-                      </a>
+                      </Link>
 
                       <button
-                        onClick={() => handleRemoveFavorite(item._id)}
+                        onClick={() => handleRemoveFavorite(item)}
                         className="p-1.5 rounded bg-slate-800 hover:bg-rose-500/15 border border-slate-700/30 text-slate-400 hover:text-rose-400 transition-colors"
                         title="Remove Bookmark"
                       >

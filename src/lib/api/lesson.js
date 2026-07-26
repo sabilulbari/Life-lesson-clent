@@ -17,5 +17,9 @@ export const getUserLesson = async(id)=>{
   return serverFetch(`/api/lessons/my-lessons/${id}`);
 }
 
+export const getMyFavoritesLesson = async(userId)=>{
+  return serverFetch(`/api/lesson/my-favorites/${userId}`);
+}
+
 
 

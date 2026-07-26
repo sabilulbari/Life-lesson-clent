@@ -56,23 +56,6 @@ export async function getMostSavedLessons() {
   }
 }
 
-// 5. Get My Lessons (owned by authenticated user)
-export async function getMyLessons() {
-  try {
-    const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"]) return [];
-
-    const res = await fetch(`${EXPRESS_API}/api/lessons/my-lessons`, {
-      headers: authHeaders,
-      cache: "no-store"
-    });
-    if (!res.ok) throw new Error("Failed to fetch my lessons");
-    return await res.json();
-  } catch (error) {
-    console.error("Error in getMyLessons:", error);
-    return [];
-  }
-}
 
 // 6. Get My Favorites (favorited by authenticated user)
 export async function getMyFavorites() {
@@ -139,28 +122,7 @@ export async function getLessonById(id) {
   }
 }
 
-// 10. Create a lesson
-export async function createLesson(data) {
-  try {
-    const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"]) return { error: "Unauthorized" };
 
-    const res = await fetch(`${EXPRESS_API}/api/lessons`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...authHeaders
-      },
-      body: JSON.stringify(data)
-    });
-    const result = await res.json();
-    if (!res.ok) return { error: result.error || "Failed to create lesson" };
-    return { success: true, lesson: result };
-  } catch (error) {
-    console.error("Error in createLesson:", error);
-    return { error: error.message };
-  }
-}
 
 // 11. Update a lesson
 export async function updateLesson(id, data) {

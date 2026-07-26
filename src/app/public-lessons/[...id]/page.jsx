@@ -38,6 +38,9 @@ export default function LessonDetails() {
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [reportReason, setReportReason] = useState("Spam");
 
+  console.log("Lesson ID from params:", id);
+  console.log("Session data:", session);
+
   if (!session) {
     router.push("/auth/login");
     return;
