@@ -282,23 +282,6 @@ export async function reportLesson(lessonId, lessonTitle, reason) {
   }
 }
 
-// 2. Get reported lessons list (Admin)
-export async function getReports() {
-  try {
-    const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"]) return [];
-
-    const res = await fetch(`${EXPRESS_API}/api/reports`, {
-      headers: authHeaders,
-      cache: "no-store"
-    });
-    if (!res.ok) throw new Error("Failed to fetch reports");
-    return await res.json();
-  } catch (error) {
-    console.error("Error in getReports:", error);
-    return [];
-  }
-}
 
 // 3. Get detailed reports for a lesson (Admin)
 export async function getReportDetails(lessonId) {

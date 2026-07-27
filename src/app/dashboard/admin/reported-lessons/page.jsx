@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getReports, getReportDetails, ignoreReports, deleteLesson } from "@/actions/lessons";
+import {getReportDetails, ignoreReports, deleteLesson } from "@/actions/lessons";
 import { AlertOctagon, CheckSquare, Trash2, Eye, ShieldAlert, X } from "lucide-react";
 import toast from "react-hot-toast";
+import { getReports } from "@/lib/api/AdminAllUsers";
 
 export default function ReportedLessons() {
   const [reports, setReports] = useState([]);
