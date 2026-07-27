@@ -204,24 +204,7 @@ export async function favoriteLesson(id) {
   }
 }
 
-// 15. Toggle feature (Admin)
-export async function toggleFeatureLesson(id) {
-  try {
-    const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"]) return { error: "Unauthorized" };
 
-    const res = await fetch(`${EXPRESS_API}/api/lessons/${id}/feature`, {
-      method: "PATCH",
-      headers: authHeaders
-    });
-    const result = await res.json();
-    if (!res.ok) return { error: result.error || "Failed to toggle featured status" };
-    return { success: true, featured: result.featured };
-  } catch (error) {
-    console.error("Error in toggleFeatureLesson:", error);
-    return { error: error.message };
-  }
-}
 
 // 16. Mark as reviewed (Admin)
 export async function reviewLesson(id) {

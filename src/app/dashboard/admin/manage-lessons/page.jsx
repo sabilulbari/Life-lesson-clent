@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAdminLessons, deleteLesson, toggleFeatureLesson, reviewLesson } from "@/actions/lessons";
+import { getAdminLessons, deleteLesson, reviewLesson } from "@/actions/lessons";
 import Link from "next/link";
 import { Globe, Lock, Unlock, Eye, Star, CheckSquare, Trash2, SlidersHorizontal, BookOpen, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
+import { toggleFeatureLesson } from "@/lib/action/admin";
 
 const CATEGORIES = ["Personal Growth", "Career", "Relationships", "Mindset", "Mistakes Learned"];
 
@@ -119,7 +120,7 @@ export default function ManageLessons() {
           <div className="text-xl font-bold text-slate-200 mt-0.5">{privateCount}</div>
         </div>
         <div className="p-4 rounded-xl bg-slate-800/10 border border-slate-700/20 text-center">
-          <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Unreviewed Content</div>
+          <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Reported Content</div>
           <div className="text-xl font-bold text-amber-400 mt-0.5">{flaggedCount}</div>
         </div>
       </div>

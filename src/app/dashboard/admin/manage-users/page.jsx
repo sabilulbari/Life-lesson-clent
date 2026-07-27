@@ -5,9 +5,10 @@ import { getAdminUsersList, updateUserRole, deleteUserAccount } from "@/actions/
 import { useSession } from "@/lib/auth-client";
 import { UserCheck, Trash2, ShieldCheck, Mail, ShieldAlert } from "lucide-react";
 import toast from "react-hot-toast";
-import { getUserListOfAdmin, updateRoleByAdmin } from "@/lib/api/AdminAllUsers";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { getUserListOfAdmin } from "@/lib/api/AdminAllUsers";
+import { updateRoleByAdmin } from "@/lib/action/admin";
 
 export default function ManageUsers() {
   const { data: session } = useSession();
