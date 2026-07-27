@@ -153,7 +153,7 @@ export async function deleteLesson(id) {
     const authHeaders = await getAuthHeaders();
     if (!authHeaders["x-user-id"]) return { error: "Unauthorized" };
 
-    const res = await fetch(`${EXPRESS_API}/api/lessons/${id}`, {
+    const res = await fetch(`${EXPRESS_API}/api/dashboard/admin/lessons/${id}`, {
       method: "DELETE",
       headers: authHeaders
     });
@@ -204,26 +204,6 @@ export async function favoriteLesson(id) {
   }
 }
 
-
-
-// 16. Mark as reviewed (Admin)
-export async function reviewLesson(id) {
-  try {
-    const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"]) return { error: "Unauthorized" };
-
-    const res = await fetch(`${EXPRESS_API}/api/lessons/${id}/review`, {
-      method: "PATCH",
-      headers: authHeaders
-    });
-    const result = await res.json();
-    if (!res.ok) return { error: result.error || "Failed to mark reviewed" };
-    return { success: true, isReviewed: result.isReviewed };
-  } catch (error) {
-    console.error("Error in reviewLesson:", error);
-    return { error: error.message };
-  }
-}
 
 // COMMENTS SERVER ACTIONS
 

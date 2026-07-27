@@ -15,3 +15,6 @@ export const deleteUserAcc = async (targetId) => {
 export const toggleFeatureLesson= async(id)=>{
     return serverMutation(`/api/lessons/${id}/feature`, {}, "PATCH");
 }
+export const reviewLesson = async (id) => {
+  return serverMutation(`/api/lessons/${id}/review`, {}, "PATCH");
+};

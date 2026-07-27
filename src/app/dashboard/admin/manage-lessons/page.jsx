@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAdminLessons, deleteLesson, reviewLesson } from "@/actions/lessons";
-import Link from "next/link";
-import { Globe, Lock, Unlock, Eye, Star, CheckSquare, Trash2, SlidersHorizontal, BookOpen, AlertTriangle } from "lucide-react";
+import { getAdminLessons, deleteLesson } from "@/actions/lessons";
+import { Eye, Star, Trash2, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
-import { toggleFeatureLesson } from "@/lib/action/admin";
+import { reviewLesson, toggleFeatureLesson } from "@/lib/action/admin";
+import Link from "next/link";
 
 const CATEGORIES = ["Personal Growth", "Career", "Relationships", "Mindset", "Mistakes Learned"];
 
@@ -28,7 +28,7 @@ export default function ManageLessons() {
       const data = await getAdminLessons({
         category,
         visibility,
-        isReviewed
+        isReviewed,
       });
       setLessons(data || []);
     } catch (err) {
@@ -49,8 +49,9 @@ export default function ManageLessons() {
       if (res.error) {
         toast.error(res.error);
       } else {
-        toast.success(res.featured ? "Lesson added to Homepage Featured list!" : "Lesson removed from Featured list");
-        setLessons(lessons.map((l) => (l._id === lessonId ? { ...l, featured: res.featured } : l)));
+        console.log(res.lesson.featured, "featured lesson");
+        toast.success(res?.lesson?.featured ? "Lesson added to Homepage Featured list!" : "Lesson removed from Featured list");
+        setLessons(lessons.map((l) => (l._id === lessonId ? { ...l, featured: res?.lesson?.featured } : l)));
       }
     } catch (err) {
       toast.error("Something went wrong");
@@ -101,12 +102,8 @@ export default function ManageLessons() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">
-          Moderation Panel
-        </h1>
-        <p className="text-xs text-slate-400 mt-1">
-          Moderate lessons, mark content as reviewed, and select lessons to feature on the homepage.
-        </p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">Moderation Panel</h1>
+        <p className="text-xs text-slate-400 mt-1">Moderate lessons, mark content as reviewed, and select lessons to feature on the homepage.</p>
       </div>
 
       {/* Moderation Stats */}
@@ -136,7 +133,9 @@ export default function ManageLessons() {
           >
             <option value="">All Categories</option>
             {CATEGORIES.map((c) => (
-              <option key={c} value={c}>{c}</option>
+              <option key={c} value={c}>
+                {c}
+              </option>
             ))}
           </select>
         </div>
@@ -206,17 +205,17 @@ export default function ManageLessons() {
             <tbody className="divide-y divide-slate-800/20 text-slate-300">
               {lessons.map((item) => (
                 <tr key={item._id} className="hover:bg-slate-800/10 transition-colors">
-                  <td className="py-3 px-2 max-w-[200px] truncate font-bold text-slate-200">
-                    {item.title}
-                  </td>
+                  <td className="py-3 px-2 max-w-[200px] truncate font-bold text-slate-200">{item.title}</td>
                   <td className="py-3 px-2">{item.category}</td>
                   <td className="py-3 px-2 font-medium">{item.creatorName}</td>
-                  
+
                   {/* Access */}
                   <td className="py-3 px-2 text-center">
-                    <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded font-bold text-[10px] uppercase ${
-                      item.accessLevel === "Premium" ? "bg-indigo-500/15 text-indigo-400" : "bg-emerald-500/15 text-emerald-400"
-                    }`}>
+                    <span
+                      className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded font-bold text-[10px] uppercase ${
+                        item.accessLevel === "Premium" ? "bg-indigo-500/15 text-indigo-400" : "bg-emerald-500/15 text-emerald-400"
+                      }`}
+                    >
                       {item.accessLevel}
                     </span>
                   </td>
@@ -226,9 +225,7 @@ export default function ManageLessons() {
                     <button
                       onClick={() => handleToggleFeatured(item._id)}
                       className={`p-1 rounded-lg border transition-colors ${
-                        item.featured
-                          ? "bg-amber-500/10 border-amber-500/20 text-amber-400"
-                          : "bg-slate-800 border-slate-700/50 text-slate-500 hover:text-amber-400"
+                        item.featured ? "bg-amber-500/10 border-amber-500/20 text-amber-400" : "bg-slate-800 border-slate-700/50 text-slate-500 hover:text-amber-400"
                       }`}
                       title={item.featured ? "Remove Featured" : "Make Featured"}
                     >
@@ -253,13 +250,13 @@ export default function ManageLessons() {
                   {/* Actions */}
                   <td className="py-3 px-2 text-center">
                     <div className="flex items-center justify-center space-x-2">
-                      <a
-                        href={`/lessons/${item._id}`}
+                      <Link
+                        href={`/public-lessons/${item._id}`}
                         className="p-1.5 rounded bg-slate-850 hover:bg-indigo-500/15 border border-slate-700/30 text-slate-400 hover:text-indigo-400 transition-colors"
                         title="Inspect Lesson"
                       >
                         <Eye size={12} />
-                      </a>
+                      </Link>
 
                       <button
                         onClick={() => setDeleteId(item._id)}
@@ -283,14 +280,9 @@ export default function ManageLessons() {
           <div className="w-full max-w-sm glass rounded-3xl border border-[var(--card-border)] p-6 space-y-4 text-center animate-in zoom-in-95 duration-200">
             <AlertTriangle size={36} className="text-rose-500 mx-auto animate-pulse" />
             <h3 className="text-base font-bold text-slate-200">Delete Inappropriate Lesson?</h3>
-            <p className="text-xs text-slate-400">
-              Are you sure? This will permanently delete this lesson from the entire platform.
-            </p>
+            <p className="text-xs text-slate-400">Are you sure? This will permanently delete this lesson from the entire platform.</p>
             <div className="flex items-center justify-center space-x-2 pt-2">
-              <button
-                onClick={() => setDeleteId(null)}
-                className="px-4 py-2 rounded-xl bg-slate-850 text-xs font-semibold text-slate-300 hover:bg-slate-750 transition-colors"
-              >
+              <button onClick={() => setDeleteId(null)} className="px-4 py-2 rounded-xl bg-slate-850 text-xs font-semibold text-slate-300 hover:bg-slate-750 transition-colors">
                 Cancel
               </button>
               <button
@@ -298,11 +290,7 @@ export default function ManageLessons() {
                 disabled={deleting}
                 className="px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-semibold text-xs transition-colors flex items-center justify-center"
               >
-                {deleting ? (
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full" />
-                ) : (
-                  <span>Moderate & Delete</span>
-                )}
+                {deleting ? <span className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full" /> : <span>Moderate & Delete</span>}
               </button>
             </div>
           </div>
