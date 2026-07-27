@@ -47,9 +47,9 @@ const LessionCard = ({ lesson, session }) => {
         {/* Title */}
         <h3 className="font-bold text-lg leading-snug line-clamp-2 dark:text-slate-100 group-hover:text-indigo-400 transition-colors">{lesson.title}</h3>
         {/* 2. Image Area (Aligned perfectly below the header) */}
-        {lesson.lessonImage && (
+        {lesson.image && (
           <div className="w-full h-40 rounded-xl overflow-hidden border border-slate-800/55 bg-slate-900 flex items-center justify-center shrink-0">
-            <Image src={lesson.lessonImage} width={300} height={200} alt={lesson.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+            <Image src={lesson.image} width={300} height={200} alt={lesson.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
           </div>
         )}
         {/* Short Preview */}

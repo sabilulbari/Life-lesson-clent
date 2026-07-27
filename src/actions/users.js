@@ -81,28 +81,6 @@ export async function getAdminUsersList() {
   }
 }
 
-// 4. Update user role (Admin panel)
-export async function updateUserRole(targetUserId, newRole) {
-  try {
-    const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"] || authHeaders["x-user-role"] !== "admin") return { error: "Forbidden" };
-
-    const res = await fetch(`${EXPRESS_API}/api/users/admin/role`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        ...authHeaders
-      },
-      body: JSON.stringify({ targetUserId, newRole })
-    });
-    const result = await res.json();
-    if (!res.ok) return { error: result.error || "Failed to update role" };
-    return { success: true, user: result.user };
-  } catch (error) {
-    console.error("Error in updateUserRole:", error);
-    return { error: error.message };
-  }
-}
 
 // 5. Delete a user account (Admin panel)
 export async function deleteUserAccount(targetUserId) {

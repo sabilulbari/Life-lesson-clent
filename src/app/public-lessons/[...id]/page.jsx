@@ -38,13 +38,13 @@ export default function LessonDetails() {
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [reportReason, setReportReason] = useState("Spam");
 
-  console.log("Lesson ID from params:", id);
-  console.log("Session data:", session);
 
-  if (!session) {
-    router.push("/auth/login");
-    return;
-  }
+
+ useEffect(() => {
+   if (!session) {
+     router.push("/auth/login");
+   }
+ }, [session, router]);
 
   const loadData = async () => {
     if (!id) return;
@@ -53,7 +53,6 @@ export default function LessonDetails() {
       const lessonData = await getLessonById(id);
       //কাজ বাকি আছে, এখানে আমরা লেখকের তথ্যও আনতে চাই। তাই আমরা লেখকের আইডি ব্যবহার করে getLessonById ফাংশন কল করছি。
       const authorLessonData = await getLessonById(lessonData.creatorId);
-      console.log(authorLessonData, "Author's lesson data");
       if (!lessonData) {
         toast.error("Lesson not found");
         router.push("/public-lessons");

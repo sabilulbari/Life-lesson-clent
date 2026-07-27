@@ -5,11 +5,13 @@ import { getAdminUsersList, updateUserRole, deleteUserAccount } from "@/actions/
 import { useSession } from "@/lib/auth-client";
 import { UserCheck, Trash2, ShieldCheck, Mail, ShieldAlert } from "lucide-react";
 import toast from "react-hot-toast";
-import { getUserListOfAdmin } from "@/lib/api/AdminAllUsers";
+import { getUserListOfAdmin, updateRoleByAdmin } from "@/lib/api/AdminAllUsers";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function ManageUsers() {
   const { data: session } = useSession();
+  const router = useRouter()
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -42,12 +44,13 @@ export default function ManageUsers() {
 
     const newRole = currentRole === "admin" ? "user" : "admin";
     try {
-      const res = await updateUserRole(userId, newRole);
+      const res = await updateRoleByAdmin(userId, newRole);
       if (res.error) {
         toast.error(res.error);
       } else {
         toast.success(`User role updated to ${newRole}`);
         setUsers(users.map((u) => (u.id === userId ? { ...u, role: newRole } : u)));
+        loadUsers()
       }
     } catch (err) {
       toast.error("Failed to update role");
@@ -141,9 +144,9 @@ export default function ManageUsers() {
                     <div className="flex items-center justify-center space-x-2">
                       {/* Toggle Role Button */}
                       <button
-                        onClick={() => handleRoleChange(u.id, u.role)}
-                        disabled={u.id === session?.user?.id}
-                        className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-indigo-500/10 border border-slate-700/50 hover:border-indigo-500/35 text-slate-400 hover:text-indigo-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed font-semibold"
+                        onClick={() => handleRoleChange(u._id, u.role)}
+                        disabled={u._id === session?.user?.id}
+                        className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-indigo-500/10 border border-slate-700/50 hover:border-indigo-500/35 text-slate-400 hover:text-indigo-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed font-semibold cursor-pointer"
                         title={u.role === "admin" ? "Demote to User" : "Promote to Admin"}
                       >
                         Change Role
@@ -151,9 +154,9 @@ export default function ManageUsers() {
 
                       {/* Delete Account */}
                       <button
-                        onClick={() => setDeleteId(u.id)}
-                        disabled={u.id === session?.user?.id}
-                        className="p-1.5 rounded bg-slate-800 hover:bg-rose-500/10 border border-slate-700/30 text-slate-400 hover:text-rose-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        onClick={() => setDeleteId(u._id)}
+                        disabled={u._id === session?.user?.id}
+                        className="p-1.5 rounded bg-slate-800 hover:bg-rose-500/10 border border-slate-700/30 text-slate-400 hover:text-rose-500 transition-colors disabled:opacity-40  cursor-pointer disabled:cursor-not-allowed"
                         title="Delete User Account"
                       >
                         <Trash2 size={12} />
