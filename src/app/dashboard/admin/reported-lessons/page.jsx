@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {getReportDetails, ignoreReports, deleteLesson } from "@/actions/lessons";
+import {ignoreReports, deleteLesson } from "@/actions/lessons";
 import { AlertOctagon, CheckSquare, Trash2, Eye, ShieldAlert, X } from "lucide-react";
 import toast from "react-hot-toast";
-import { getReports } from "@/lib/api/AdminAllUsers";
+import { getReports, getReportsDetails } from "@/lib/api/AdminAllUsers";
 
 export default function ReportedLessons() {
   const [reports, setReports] = useState([]);
@@ -42,7 +42,7 @@ export default function ReportedLessons() {
     setDetailsModalOpen(true);
     setLoadingDetails(true);
     try {
-      const details = await getReportDetails(lesson._id);
+      const details = await getReportsDetails(lesson.lessonId);
       setReportDetails(details || []);
     } catch (err) {
       toast.error("Failed to load report reasons");
@@ -92,12 +92,8 @@ export default function ReportedLessons() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">
-          Flagged Contents
-        </h1>
-        <p className="text-xs text-slate-400 mt-1">
-          Review community reports, check flag counts and reasons, and clear flags or remove content.
-        </p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight text-slate-200">Flagged Contents</h1>
+        <p className="text-xs text-slate-400 mt-1">Review community reports, check flag counts and reasons, and clear flags or remove content.</p>
       </div>
 
       {loading ? (
@@ -122,9 +118,9 @@ export default function ReportedLessons() {
             </thead>
             <tbody className="divide-y divide-slate-800/20 text-slate-300">
               {reports.map((item) => (
-                <tr key={item._id} className="hover:bg-slate-800/10 transition-colors">
+                <tr key={item.lessonId} className="hover:bg-slate-800/10 transition-colors">
                   <td className="py-3 px-2 font-bold text-slate-200">{item.lessonTitle}</td>
-                  
+
                   {/* Report count */}
                   <td className="py-3 px-2 text-center">
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/25 font-bold">
@@ -171,11 +167,9 @@ export default function ReportedLessons() {
       {/* Flag Reasons Modal */}
       {detailsModalOpen && selectedLesson && (
         <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-md glass rounded-3xl border border-[var(--card-border)] p-6 space-y-4 max-h-[80vh] overflow-y-auto animate-in zoom-in-95 duration-200">
+          <div className="w-full max-w-md glass rounded-3xl border border-(--card-border) p-6 space-y-4 max-h-[80vh] overflow-y-auto animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between pb-3 border-b border-slate-800/40">
-              <h3 className="font-bold text-slate-200 truncate pr-4 text-sm font-display">
-                Flags for: "{selectedLesson.lessonTitle}"
-              </h3>
+              <h3 className="font-bold text-slate-200 truncate pr-4 text-sm font-display">Flags for: &quot;{selectedLesson.lessonTitle}&quot;</h3>
               <button
                 onClick={() => {
                   setDetailsModalOpen(false);
@@ -199,10 +193,13 @@ export default function ReportedLessons() {
                 {reportDetails.map((rep) => (
                   <div key={rep._id} className="p-3 rounded-xl bg-slate-800/30 border border-slate-700/30 text-xs">
                     <div className="flex justify-between text-[10px] text-slate-400 mb-1">
-                      <span className="font-semibold">{rep.reporterUserEmail}</span>
+                      <span className="text-slate-300 font-semibold">Name: {rep.reportedBy?.name}</span>
+                      <p className="text-slate-300 font-semibold">Reason: {rep.reason}</p>
+                    </div>
+                    <div className="flex justify-between text-[10px] text-slate-400">
+                      <p>{rep.reportedBy?.email}</p>
                       <span>{new Date(rep.createdAt).toLocaleDateString()}</span>
                     </div>
-                    <p className="text-slate-300 font-medium">Reason: {rep.reason}</p>
                   </div>
                 ))}
               </div>
@@ -232,14 +229,9 @@ export default function ReportedLessons() {
           <div className="w-full max-w-sm glass rounded-3xl border border-[var(--card-border)] p-6 space-y-4 text-center animate-in zoom-in-95 duration-200">
             <ShieldAlert size={36} className="text-rose-500 mx-auto" />
             <h3 className="text-base font-bold text-slate-200">Moderate & Delete Lesson?</h3>
-            <p className="text-xs text-slate-400">
-              Are you sure? This will permanently delete the flagged lesson from the database.
-            </p>
+            <p className="text-xs text-slate-400">Are you sure? This will permanently delete the flagged lesson from the database.</p>
             <div className="flex items-center justify-center space-x-2 pt-2">
-              <button
-                onClick={() => setDeleteId(null)}
-                className="px-4 py-2 rounded-xl bg-slate-850 text-xs font-semibold text-slate-300 hover:bg-slate-750 transition-colors"
-              >
+              <button onClick={() => setDeleteId(null)} className="px-4 py-2 rounded-xl bg-slate-850 text-xs font-semibold text-slate-300 hover:bg-slate-750 transition-colors">
                 Cancel
               </button>
               <button
@@ -247,11 +239,7 @@ export default function ReportedLessons() {
                 disabled={deleting}
                 className="px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-semibold text-xs transition-colors flex items-center justify-center"
               >
-                {deleting ? (
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full" />
-                ) : (
-                  <span>Delete Content</span>
-                )}
+                {deleting ? <span className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full" /> : <span>Delete Content</span>}
               </button>
             </div>
           </div>

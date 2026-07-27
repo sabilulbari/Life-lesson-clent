@@ -9,5 +9,8 @@ export const getUserListOfAdmin = async () => {
 export const getReports = async ()=>{
   return authorizeServerFetch("/api/reports", "admin");
 }
+export const getReportsDetails = async (lessonId) => {
+  return authorizeServerFetch(`/api/reports/${lessonId}/details`, "admin");
+};
 
 
