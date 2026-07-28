@@ -1,4 +1,4 @@
-import { serverFetch } from "../core/server";
+import { authorizeServerFetch, serverFetch } from "../core/server";
 
 export const getAllLessons = async () => {
   return serverFetch("/api/all/public/lessons");
@@ -7,6 +7,10 @@ export const getAllLessons = async () => {
 export async function getLessonById(id) {
   return serverFetch(`/api/all/public/lessons/${id}`);
 }
+
+export const getUserStats = async () => {
+  return authorizeServerFetch(`/api/users/stats`, "user");
+};
 
 
 export async function getLessons({ category = "", emotionalTone = "", search = "", sort = "newest" } = {}) {

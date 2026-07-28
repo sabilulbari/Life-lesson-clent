@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 import { Search, Filter, SlidersHorizontal, Lock, ArrowRight, BookOpen, Smile, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
@@ -13,14 +14,27 @@ const TONES = ["Motivational", "Sad", "Realization", "Gratitude"];
 
 export default function PublicLessons() {
   const { data: session } = useSession();
+  const searchParams = useSearchParams();
+
+  // URL parameters থেকে 'search' ফিল্ডের মান রিড করা
+  const initialSearch = searchParams.get("search") || "";
+
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Filter States
-  const [search, setSearch] = useState("");
+  // Filter States (ইনিশিয়াল সার্চ ফিল্ডে URL-এর মান বসানো হয়েছে)
+  const [search, setSearch] = useState(initialSearch);
   const [category, setCategory] = useState("");
   const [tone, setTone] = useState("");
   const [sort, setSort] = useState("newest");
+
+  // URL query পরিবর্তন হলে state আপডেট করা
+  useEffect(() => {
+    const urlSearchQuery = searchParams.get("search");
+    if (urlSearchQuery !== null) {
+      setSearch(urlSearchQuery);
+    }
+  }, [searchParams]);
 
   // Load public lessons
   const loadLessons = async () => {
@@ -77,7 +91,7 @@ export default function PublicLessons() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by title or keywords..."
+              placeholder="Search by title, author, or keywords..."
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800/40 border border-slate-700/50 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none text-sm text-foreground transition-all"
             />
           </div>
@@ -195,10 +209,16 @@ export default function PublicLessons() {
                     </span>
                   </div>
 
-                  {/* 2. Image Area (Aligned perfectly below the header) */}
+                  {/* 2. Image Area */}
                   {lesson.image && (
                     <div className="w-full h-40 rounded-xl overflow-hidden border border-slate-800/55 bg-slate-900 flex items-center justify-center shrink-0">
-                      <Image src={lesson.image} alt={lesson.title} height={150} width={200} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      <Image
+                        src={lesson.image}
+                        alt={lesson.title}
+                        height={150}
+                        width={200}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
                     </div>
                   )}
 
