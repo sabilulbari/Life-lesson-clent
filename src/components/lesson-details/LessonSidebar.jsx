@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Calendar, Clock, Globe, Heart, Bookmark, Eye } from "lucide-react";
 import { MdEditCalendar } from "react-icons/md";
 
-export default function LessonSidebar({ lesson, readingTime, likesCount, favCount, viewsCount }) {
+export default function LessonSidebar({totalLesson, lesson, readingTime, likesCount, favCount, viewsCount }) {
   return (
     <div className="space-y-6">
       {/* Metadata Block */}
@@ -68,6 +68,9 @@ export default function LessonSidebar({ lesson, readingTime, likesCount, favCoun
           <div>
             <h4 className="font-bold text-base text-slate-200">{lesson.creatorName}</h4>
             <p className="text-[10px] text-slate-400">Wise Contributor</p>
+          </div>
+          <div className="block w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 border border-slate-700/50 hover:text-white transition-colors">
+            Total lesson: {totalLesson}
           </div>
           <Link
             href={`/public-lessons?search=${encodeURIComponent(lesson.creatorName)}`}

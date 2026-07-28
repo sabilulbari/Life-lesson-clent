@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { updateProfile } from "@/actions/users";
 import { ShieldCheck, Mail, Calendar, Sparkles, Save, FileEdit, Award } from "lucide-react";
 import toast from "react-hot-toast";

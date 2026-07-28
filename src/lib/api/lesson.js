@@ -5,8 +5,9 @@ export const getAllLessons = async () => {
 };
 
 export async function getLessonById(id) {
-  return serverFetch(`/api/all/public/lessons${id}`);
+  return serverFetch(`/api/all/public/lessons/${id}`);
 }
+
 
 export async function getLessons({ category = "", emotionalTone = "", search = "", sort = "newest" } = {}) {
   const query = new URLSearchParams({category, emotionalTone, search, sort});

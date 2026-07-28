@@ -63,7 +63,16 @@ const FeaturedLession = () => {
       ) : (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {lessonsData.slice(0, 6).map((lesson) => (
-            <LessionCard key={lesson.id || lesson._id} lesson={lesson} session={session} />
+            <>
+              {lesson.featured ? (
+                <LessionCard key={lesson.id || lesson._id} lesson={lesson} session={session} />
+              ) : (
+                <div className="glass p-12 text-center rounded-2xl border border-(--card-border) text-slate-400">
+                  <Compass size={40} className="mx-auto text-indigo-400/50 mb-3" />
+                  <p className="text-sm">No featured insights available yet. Check back soon!</p>
+                </div>
+              )}
+            </>
           ))}
         </motion.div>
       )}

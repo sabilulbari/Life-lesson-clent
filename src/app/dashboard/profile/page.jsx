@@ -99,7 +99,7 @@ export default function Profile() {
 
   if (!session) return null;
 
-  const isPremium = session.user.plan === "premium";
+  const isPremium = session?.user?.plan === "premium";
 
   return (
     <div className="space-y-8 ">

@@ -14,8 +14,8 @@ import LessonBody from "@/components/lesson-details/LessonBody";
 import LessonSidebar from "@/components/lesson-details/LessonSidebar";
 import CommentSection from "@/components/lesson-details/CommentSection";
 import ReportModal from "@/components/lesson-details/ReportModal";
-import { addComment, favoriteLesson, getComments, getLessonById, likeLesson, reportLesson } from "@/actions/lessons";
-import { getLessons } from "@/lib/api/lesson";
+import { addComment, favoriteLesson, getComments, likeLesson, reportLesson } from "@/actions/lessons";
+import { getLessonById, getLessons, getUserLesson } from "@/lib/api/lesson";
 
 export default function LessonDetails() {
   const params = useParams();
@@ -34,6 +34,7 @@ export default function LessonDetails() {
   const [favCount, setFavCount] = useState(0);
   const [favorited, setFavorited] = useState(false);
   const [viewsCount, setViewsCount] = useState(0);
+  const [authorLesCount, setAuthorLesCount]= useState(0);
 
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [reportReason, setReportReason] = useState("Spam");
@@ -51,8 +52,10 @@ export default function LessonDetails() {
     setLoading(true);
     try {
       const lessonData = await getLessonById(id);
-      //কাজ বাকি আছে, এখানে আমরা লেখকের তথ্যও আনতে চাই। তাই আমরা লেখকের আইডি ব্যবহার করে getLessonById ফাংশন কল করছি。
-      const authorLessonData = await getLessonById(lessonData.creatorId);
+      
+      const {totalLesson} = await getUserLesson(lessonData?.creatorId);
+      setAuthorLesCount(totalLesson);
+
       if (!lessonData) {
         toast.error("Lesson not found");
         router.push("/public-lessons");
@@ -240,7 +243,14 @@ export default function LessonDetails() {
         </div>
 
         {/* Sidebar Info Panels */}
-        <LessonSidebar lesson={lesson} readingTime={getReadingTime(lesson.description)} likesCount={likesCount} favCount={favCount} viewsCount={viewsCount} />
+        <LessonSidebar
+          lesson={lesson}
+          readingTime={getReadingTime(lesson.description)}
+          likesCount={likesCount}
+          favCount={favCount}
+          viewsCount={viewsCount}
+          totalLesson={authorLesCount}
+        />
       </div>
 
       {/* Recommendations */}
