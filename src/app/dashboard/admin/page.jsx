@@ -22,6 +22,7 @@ export default function AdminHome() {
     async function loadStats() {
       try {
         const data = await getAdminStats();
+        console.log(data, "admin stats")
         setStats(data);
       } catch (err) {
         toast.error("Failed to load admin statistics");
