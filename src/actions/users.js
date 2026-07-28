@@ -101,7 +101,7 @@ export async function deleteUserAccount(targetUserId) {
   }
 }
 
-// 6. Update user's own profile (Name, Photo URL)
+// 6. Update user's own profile (Name, Photo URL)......
 export async function updateProfile(data) {
   try {
     const authHeaders = await getAuthHeaders();

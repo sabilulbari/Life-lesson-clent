@@ -30,16 +30,16 @@ export default function AdminProfile() {
 
     setUpdating(true);
     try {
-      const res = await updateProfile({ name, image: photo });
-      if (res.error) {
-        toast.error(res.error);
+      const { data, error } = await authClient.updateUser({
+        name: name,
+        image: photo,
+        updatedAt: new Date(),
+      });
+
+      if (error) {
+        toast.error(error.message || "Failed to update profile");
       } else {
-        toast.success("Admin profile updated successfully!");
-        // Update Better Auth session locally
-        await update({
-          name: name,
-          image: photo
-        });
+        toast.success("Profile updated successfully!");
       }
     } catch (err) {
       toast.error("Something went wrong");
