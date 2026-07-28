@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {ignoreReports, deleteLesson } from "@/actions/lessons";
 import { AlertOctagon, CheckSquare, Trash2, Eye, ShieldAlert, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { getReports, getReportsDetails } from "@/lib/api/AdminAllUsers";
+import { deleteLessonAndReports, ignoreReports } from "@/lib/action/admin";
 
 export default function ReportedLessons() {
   const [reports, setReports] = useState([]);
@@ -59,7 +59,7 @@ export default function ReportedLessons() {
         toast.error(res.error);
       } else {
         toast.success("Reports ignored and cleared.");
-        setReports(reports.filter((r) => r._id !== lessonId));
+        setReports(reports.filter((r) => r.lessonId !== lessonId));
         setDetailsModalOpen(false);
       }
     } catch (err) {
@@ -72,12 +72,12 @@ export default function ReportedLessons() {
     if (!deleteId) return;
     setDeleting(true);
     try {
-      const res = await deleteLesson(deleteId);
+      const res = await deleteLessonAndReports(deleteId);
       if (res.error) {
         toast.error(res.error);
       } else {
         toast.success("Lesson deleted permanently");
-        setReports(reports.filter((r) => r._id !== deleteId));
+        setReports(reports.filter((r) => r.lessonId !== deleteId));
         setDeleteId(null);
         setDetailsModalOpen(false);
       }
@@ -141,7 +141,7 @@ export default function ReportedLessons() {
                       </button>
 
                       <button
-                        onClick={() => handleIgnore(item._id)}
+                        onClick={() => handleIgnore(item.lessonId)}
                         className="p-1.5 rounded bg-slate-800 hover:bg-emerald-500/15 border border-slate-700/30 text-slate-400 hover:text-emerald-400 transition-colors"
                         title="Ignore Flags"
                       >
@@ -149,7 +149,7 @@ export default function ReportedLessons() {
                       </button>
 
                       <button
-                        onClick={() => setDeleteId(item._id)}
+                        onClick={() => setDeleteId(item.lessonId)}
                         className="p-1.5 rounded bg-slate-800 hover:bg-rose-500/15 border border-slate-700/30 text-slate-400 hover:text-rose-500 transition-colors"
                         title="Delete Flagged Lesson"
                       >
@@ -207,13 +207,13 @@ export default function ReportedLessons() {
 
             <div className="flex justify-end space-x-2 pt-2 border-t border-slate-800/40">
               <button
-                onClick={() => handleIgnore(selectedLesson._id)}
+                onClick={() => handleIgnore(selectedLesson.lessonId)}
                 className="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-semibold text-xs transition-colors"
               >
                 Ignore all & Clear
               </button>
               <button
-                onClick={() => setDeleteId(selectedLesson._id)}
+                onClick={() => setDeleteId(selectedLesson.lessonId)}
                 className="px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-semibold text-xs transition-colors"
               >
                 Delete Lesson

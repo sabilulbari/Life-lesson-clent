@@ -18,3 +18,11 @@ export const toggleFeatureLesson= async(id)=>{
 export const reviewLesson = async (id) => {
   return serverMutation(`/api/lessons/${id}/review`, {}, "PATCH");
 };
+
+export const ignoreReports = async (lessonId) => {
+  return serverMutation(`/api/reports/${lessonId}/ignore/delete`, {deleteType: "ignore"}, "DELETE");
+};
+
+export const deleteLessonAndReports = async (lessonId) => {
+  return serverMutation(`/api/reports/${lessonId}/ignore/delete`, { deleteType: "delete" }, "DELETE");
+};

@@ -285,21 +285,3 @@ export async function reportLesson(lessonId, lessonTitle, reason) {
 
 
 
-// 4. Ignore reports for a lesson (Admin)
-export async function ignoreReports(lessonId) {
-  try {
-    const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"]) return { error: "Unauthorized" };
-
-    const res = await fetch(`${EXPRESS_API}/api/reports/${lessonId}/ignore`, {
-      method: "DELETE",
-      headers: authHeaders
-    });
-    const result = await res.json();
-    if (!res.ok) return { error: result.error || "Failed to clear reports" };
-    return { success: true };
-  } catch (error) {
-    console.error("Error in ignoreReports:", error);
-    return { error: error.message };
-  }
-}
