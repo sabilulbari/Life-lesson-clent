@@ -1,6 +1,7 @@
 "use server";
 import { headers } from "next/headers";
 import auth from "../auth";
+import { getTokenServer } from "../getTokenServer";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -25,6 +26,8 @@ async function getAuthHeaders() {
   };
 }
 
+
+
 export const serverFetch = async (path) => {
   const res = await fetch(`${baseUrl}${path}`);
   return res.json();
@@ -32,12 +35,14 @@ export const serverFetch = async (path) => {
 
 
 export const authorizeServerFetch = async (path, role) => {
+  const token = await getTokenServer()
   const authHeaders = await getAuthHeaders();
   if (!authHeaders["x-user-id"] || authHeaders["x-user-role"] !== role) return [];
   const res = await fetch(`${baseUrl}${path}`,{
     headers:{
       "Content-Type": "application/json",
       ...authHeaders,
+      authorization: `Bearer ${token}`,
     }
   });
   return res.json();
