@@ -8,6 +8,7 @@ import { Search, Filter, SlidersHorizontal, Lock, ArrowRight, BookOpen, Smile, S
 import toast from "react-hot-toast";
 import { getLessons } from "@/lib/api/lesson";
 import Image from "next/image";
+import { Pagination, Table } from "@heroui/react";
 
 const CATEGORIES = ["Personal Growth", "Career", "Relationships", "Mindset", "Mistakes Learned"];
 const TONES = ["Motivational", "Sad", "Realization", "Gratitude"];
@@ -21,7 +22,6 @@ export default function PublicLessons() {
   const initialPageNumber = searchParams.get("currentPageNumber") || "";
   const initialLimit = searchParams.get("limit") || "";
 
-  console.log(initialPageNumber,initialLimit, "search value");
 
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,18 +34,21 @@ export default function PublicLessons() {
   const [tone, setTone] = useState("");
   const [sort, setSort] = useState("newest");
 
+  const [totalPageArray, setTotalPageArray] = useState([])
+  const [totalPage, setTotalPage]= useState()
+
   // URL query পরিবর্তন হলে state আপডেট করা
   useEffect(() => {
     const urlSearchQuery = searchParams.get("search");
-      const initialPageNumber = searchParams.get("currentPageNumber");
-      const initialLimit = searchParams.get("limit");
+    const initialPageNumber = searchParams.get("currentPageNumber");
+    const initialLimit = searchParams.get("limit");
     if (urlSearchQuery !== null) {
       setSearch(urlSearchQuery);
     }
-    if(initialPageNumber !== null){
+    if (initialPageNumber !== null) {
       setCurrentPageNumber(initialPageNumber);
     }
-    if(initialLimit !== null){
+    if (initialLimit !== null) {
       setLimit(initialLimit);
     }
   }, [searchParams]);
@@ -54,7 +57,13 @@ export default function PublicLessons() {
   const loadLessons = async () => {
     setLoading(true);
     try {
-      const data = await getLessons({
+      const {
+        data,
+        skip,
+        total_page,
+        currentPageNumber: pageCurrent,
+        limit: dataLimit,
+      } = await getLessons({
         category,
         emotionalTone: tone,
         search,
@@ -62,7 +71,15 @@ export default function PublicLessons() {
         limit,
         sort,
       });
-      setLessons(data.data || []);
+      setTotalPage(total_page);
+      setLessons(data || []);
+
+       const pages = [];
+
+    for (let i = 1; i <= total_page; i++) {
+      pages.push(i);
+    }
+      setTotalPageArray(pages);
     } catch (err) {
       toast.error("Failed to load lessons");
     } finally {
@@ -78,7 +95,7 @@ export default function PublicLessons() {
 
     return () => clearTimeout(delayDebounce);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, category, tone, sort]);
+  }, [search, category, tone, sort, currentPageNumber, limit]);
 
   const clearFilters = () => {
     setSearch("");
@@ -86,6 +103,9 @@ export default function PublicLessons() {
     setTone("");
     setSort("newest");
   };
+
+
+
 
   return (
     <div className="space-y-8 pb-12">
@@ -182,7 +202,7 @@ export default function PublicLessons() {
           <span className="text-sm text-slate-400">Loading collective wisdom...</span>
         </div>
       ) : lessons.length === 0 ? (
-        <div className="glass p-16 text-center rounded-3xl border border-[var(--card-border)] space-y-3">
+        <div className="glass p-16 text-center rounded-3xl border border-(--card-border) space-y-3">
           <SlidersHorizontal size={40} className="mx-auto text-indigo-400/50" />
           <h3 className="font-semibold text-lg text-slate-200">No lessons matched your criteria</h3>
           <p className="text-xs text-slate-400 max-w-sm mx-auto">Try adjusting your search query, selecting a different category/tone, or writing your own life lesson!</p>
@@ -190,9 +210,9 @@ export default function PublicLessons() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {lessons.map((lesson) => {
-            const isPremium = lesson.accessLevel === "premium";
+            const isPremium = lesson?.accessLevel === "Premium";
             const userPlan = session?.user?.plan || "free";
-            const isLocked = isPremium && userPlan !== "premium" && session?.user?.role !== "admin" && session?.user?.id !== lesson.creatorId;
+            const isLocked = isPremium && userPlan !== "Premium" && session?.user?.role !== "admin" && session?.user?.id !== lesson.creatorId;
 
             return (
               <div
@@ -282,6 +302,68 @@ export default function PublicLessons() {
           })}
         </div>
       )}
+      <Table.Footer className="border-t border-slate-200 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40 px-4 py-3">
+        <Pagination size="sm" className="w-full flex-wrap justify-between gap-4">
+          {/* Page Summary Text */}
+          <Pagination.Summary className="text-xs font-medium text-slate-600 dark:text-slate-400">
+            Showing page <span className="font-semibold text-slate-900 dark:text-slate-200">{currentPageNumber}</span> of{" "}
+            <span className="font-semibold text-slate-900 dark:text-slate-200">{totalPageArray.length}</span> pages
+          </Pagination.Summary>
+
+          {/* Pagination Controls */}
+          <Pagination.Content className="flex items-center gap-1">
+            {/* Previous Button */}
+            <Pagination.Item>
+              <Link href={`/public-lessons?search=${search}&currentPageNumber=${Math.max(1, Number(currentPageNumber) - 1)}&limit=${limit}`} passHref>
+                <Pagination.Previous
+                  isDisabled={Number(currentPageNumber) <= 1}
+                  onPress={() => setCurrentPageNumber((prev) => Math.max(1, Number(prev) - 1))}
+                  className="text-xs font-semibold rounded-lg transition-colors border border-slate-300 dark:border-slate-700/60 bg-white dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <Pagination.PreviousIcon className="w-3.5 h-3.5" />
+                  <span>Prev</span>
+                </Pagination.Previous>
+              </Link>
+            </Pagination.Item>
+
+            {/* Page Numbers */}
+            {totalPageArray.map((p) => {
+              const isCurrent = p === Number(currentPageNumber);
+              return (
+                <Pagination.Item key={p}>
+                  <Link href={`/public-lessons?search=${search}&currentPageNumber=${p}&limit=${limit}`} passHref>
+                    <Pagination.Link
+                      isActive={isCurrent}
+                      onPress={() => setCurrentPageNumber(p)}
+                      className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-all duration-200 border ${
+                        isCurrent
+                          ? "bg-indigo-600 text-white border-indigo-500 font-bold shadow-sm shadow-indigo-500/30"
+                          : "bg-white dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-white"
+                      }`}
+                    >
+                      {p}
+                    </Pagination.Link>
+                  </Link>
+                </Pagination.Item>
+              );
+            })}
+
+            {/* Next Button */}
+            <Pagination.Item>
+              <Link href={`/public-lessons?search=${search}&currentPageNumber=${Math.min(totalPageArray.length, Number(currentPageNumber) + 1)}&limit=${limit}`} passHref>
+                <Pagination.Next
+                  isDisabled={Number(currentPageNumber) >= totalPageArray.length}
+                  onPress={() => setCurrentPageNumber((prev) => Math.min(totalPageArray.length, Number(prev) + 1))}
+                  className="text-xs font-semibold rounded-lg transition-colors border border-slate-300 dark:border-slate-700/60 bg-white dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <span>Next</span>
+                  <Pagination.NextIcon className="w-3.5 h-3.5" />
+                </Pagination.Next>
+              </Link>
+            </Pagination.Item>
+          </Pagination.Content>
+        </Pagination>
+      </Table.Footer>
     </div>
   );
 }
