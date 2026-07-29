@@ -13,9 +13,11 @@ export const getUserStats = async () => {
 };
 
 
-export async function getLessons({ category = "", emotionalTone = "", search = "", sort = "newest" } = {}) {
-  const query = new URLSearchParams({category, emotionalTone, search, sort});
-  return serverFetch(`/api/all/public/lessons?${query.toString()}`)
+
+export async function getLessons({ category = "", emotionalTone = "", search = "", currentPageNumber = "", limit = "", sort = "newest" } = {}) {
+  const query = new URLSearchParams({ category, emotionalTone, search, currentPageNumber, limit, sort });
+  console.log(query.toString(), "get all query");
+  return serverFetch(`/api/all/public/lessons?${query.toString()}`);
 }
 
 export const getUserLesson = async(id)=>{

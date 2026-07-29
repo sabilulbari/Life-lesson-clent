@@ -49,6 +49,7 @@ export const authorizeServerFetch = async (path, role) => {
 };
 
 export const serverMutation = async (path, data, method = "POST") => {
+  const token = await getTokenServer();
   try {
     const authHeaders = await getAuthHeaders();
     if (!authHeaders["x-user-id"]) return { error: "Unauthorized" };
@@ -58,6 +59,7 @@ export const serverMutation = async (path, data, method = "POST") => {
       headers: {
         "Content-Type": "application/json",
         ...authHeaders,
+        authorization: `Bearer ${token}`
       },
       body: JSON.stringify(data),
     });

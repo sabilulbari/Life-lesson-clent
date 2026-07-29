@@ -18,12 +18,18 @@ export default function PublicLessons() {
 
   // URL parameters থেকে 'search' ফিল্ডের মান রিড করা
   const initialSearch = searchParams.get("search") || "";
+  const initialPageNumber = searchParams.get("currentPageNumber") || "";
+  const initialLimit = searchParams.get("limit") || "";
+
+  console.log(initialPageNumber,initialLimit, "search value");
 
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Filter States (ইনিশিয়াল সার্চ ফিল্ডে URL-এর মান বসানো হয়েছে)
   const [search, setSearch] = useState(initialSearch);
+  const [currentPageNumber, setCurrentPageNumber] = useState(initialPageNumber);
+  const [limit, setLimit] = useState(initialLimit);
   const [category, setCategory] = useState("");
   const [tone, setTone] = useState("");
   const [sort, setSort] = useState("newest");
@@ -31,8 +37,16 @@ export default function PublicLessons() {
   // URL query পরিবর্তন হলে state আপডেট করা
   useEffect(() => {
     const urlSearchQuery = searchParams.get("search");
+      const initialPageNumber = searchParams.get("currentPageNumber");
+      const initialLimit = searchParams.get("limit");
     if (urlSearchQuery !== null) {
       setSearch(urlSearchQuery);
+    }
+    if(initialPageNumber !== null){
+      setCurrentPageNumber(initialPageNumber);
+    }
+    if(initialLimit !== null){
+      setLimit(initialLimit);
     }
   }, [searchParams]);
 
@@ -44,9 +58,11 @@ export default function PublicLessons() {
         category,
         emotionalTone: tone,
         search,
+        currentPageNumber,
+        limit,
         sort,
       });
-      setLessons(data || []);
+      setLessons(data.data || []);
     } catch (err) {
       toast.error("Failed to load lessons");
     } finally {
