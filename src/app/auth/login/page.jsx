@@ -141,7 +141,7 @@ export default function Login() {
           <button
             onClick={handleGoogleLogin}
             type="button"
-            className="w-full py-2.5 rounded-xl border border-slate-700/50 bg-slate-800/40 text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all flex items-center justify-center space-x-2 font-medium text-sm"
+            className="w-full py-2.5 rounded-xl border border-slate-700/50 bg-slate-800/40 text-slate-300 cursor-pointer hover:bg-slate-800/80 hover:text-white transition-all flex items-center justify-center space-x-2 font-medium text-sm"
           >
             <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
               <path
