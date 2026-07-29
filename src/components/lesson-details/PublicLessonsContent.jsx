@@ -58,7 +58,6 @@ export default function PublicLessonsContent() {
     try {
       const {
         data,
-        skip,
         total_page,
         currentPageNumber: pageCurrent,
         limit: dataLimit,

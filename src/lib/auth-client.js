@@ -2,8 +2,8 @@ import { jwtClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 
 const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-  plugins: [jwtClient()]
+  baseURL: "http://localhost:3000" || "https://lifelessonclient.vercel.app",
+  plugins: [jwtClient()],
 });
 
 export const { useSession, signIn, signUp, signOut } = authClient;

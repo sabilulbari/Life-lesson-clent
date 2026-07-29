@@ -68,32 +68,7 @@ export default function Profile() {
       setUpdating(false);
     }
   };
-  // const handleUpdate = async (e) => {
-  //   e.preventDefault();
-  //   if (!name.trim()) {
-  //     toast.error("Name is required");
-  //     return;
-  //   }
 
-  //   setUpdating(true);
-  //   try {
-  //     const res = await updateProfile({ name, image: photo });
-  //     if (res.error) {
-  //       toast.error(res.error);
-  //     } else {
-  //       toast.success("Profile updated successfully!");
-  //       // Update Better Auth local session
-  //       await update({
-  //         name: name,
-  //         image: photo,
-  //       });
-  //     }
-  //   } catch (err) {
-  //     toast.error("Something went wrong");
-  //   } finally {
-  //     setUpdating(false);
-  //   }
-  // };
 
 
 

@@ -21,15 +21,13 @@ export async function getLessons({ category = "", emotionalTone = "", search = "
 }
 
 export const getUserLesson = async(id)=>{
-  return serverFetch(`/api/lessons/my-lessons/${id}`);
+  return await authorizeServerFetch(`/api/lessons/my-lessons/${id}`, "user");
 }
 
 export const getMyFavoritesLesson = async(userId)=>{
-  return serverFetch(`/api/lesson/my-favorites/${userId}`);
+  return authorizeServerFetch(`/api/lesson/my-favorites/${userId}`, "user");
 }
-// export const getMyFavoritesLesson = async(userId)=>{
-//   return serverFetch(`/api/lesson/my-favorites/${userId}`);
-// }
+
 
 
 

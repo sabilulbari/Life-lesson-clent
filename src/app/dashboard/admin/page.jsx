@@ -14,9 +14,9 @@ export default function AdminHome() {
   const [loading, setLoading] = useState(true);
 
   const roll = session?.user.role
-  if(roll !== "admin"){
-    return redirect("/unauthorized")
-  }
+  // if(roll !== "admin"){
+  //   return redirect("/unauthorized")
+  // }
 
   useEffect(() => {
     async function loadStats() {

@@ -57,13 +57,15 @@ export default function LessonDetails() {
         return;
       }
 
-      const { totalLesson } = await getUserLesson(lessonData?.creatorId);
-      setAuthorLesCount(totalLesson || 0);
+      
 
       setLesson(lessonData);
       setLikesCount(lessonData.likesCount || 0);
       setFavCount(lessonData.favoritesCount || 0);
       setViewsCount(Math.floor(Math.random() * 1000) + 150);
+
+      const { totalLesson } = await getUserLesson(lessonData?.creatorId);
+      setAuthorLesCount(totalLesson || 0);
 
       if (session?.user) {
         setLiked(lessonData.likes?.includes(session.user.id));
@@ -74,7 +76,7 @@ export default function LessonDetails() {
       setComments(commentData || []);
 
       const publicData = await getLessons({ category: lessonData.category });
-      const filtered = (publicData || []).filter((l) => l._id !== id).slice(0, 6);
+      const filtered = (publicData?.data || []).filter((l) => l._id !== id).slice(0, 6);
       setRecommended(filtered);
     } catch (err) {
       toast.error("Failed to load details");
