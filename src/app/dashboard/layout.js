@@ -8,9 +8,7 @@ export default async function DashboardLayout({ children }) {
     headers: await headers(),
   });
 
-  if (!session) {
-    redirect("/auth/login");
-  }
+
 
   return <DashboardClientWrapper session={session}>{children}</DashboardClientWrapper>;
 }

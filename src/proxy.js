@@ -1,19 +1,24 @@
 import { NextResponse } from "next/server";
 import { getUserSession } from "./lib/core/session";
+import auth from "./lib/auth";
 
-// This function can be marked `async` if using `await` inside
 export async function proxy(request) {
-    const session = await getUserSession()
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
+  const pathname = request.nextUrl.pathname;
 
-    console.log(session, "I am from proxy");
-    if(!session){
-        return NextResponse.redirect(new URL("/auth/login", request.url));
-    }
+  if (!session && !["/auth/login", "/auth/register"].includes(pathname)) {
+    return NextResponse.redirect(new URL("/auth/login", request.url));
+  }
+
+  if (session && ["/auth/login", "/auth/register"].includes(pathname)) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  return NextResponse.next();
 }
 
-// Alternatively, you can use a default export:
-// export default function proxy(request) { ... }
-
 export const config = {
-  matcher: "/public-lessons/:id",
+  matcher: ["/public-lessons/:path*", "/dashboard/add-lesson/:path*", "/dashboard/my-lessons/:path*", "/pricing", "/auth/login", "/auth/register"],
 };

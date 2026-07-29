@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client"; // স্ট্যান্ডার্ড authClient ইম্পোর্ট
 import { KeyRound, Mail, User, Image, Check, X } from "lucide-react";
 import toast from "react-hot-toast";

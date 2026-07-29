@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { signIn } from "@/lib/auth-client";
+import { redirect, useRouter } from "next/navigation";
+import { authClient, signIn } from "@/lib/auth-client";
 import { KeyRound, Mail } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -27,7 +27,6 @@ export default function Login() {
       return;
     }
 
-    console.log("Submitting login form with data:", formData);
 
     setLoading(true);
     try {
