@@ -67,7 +67,7 @@ const FeaturedLession = () => {
               {lesson.featured ? (
                 <LessionCard key={lesson._id || ind} lesson={lesson} session={session} />
               ) : (
-                <div className="glass p-12 text-center rounded-2xl border border-(--card-border) text-slate-400">
+                <div className="glass rounded-2xl border border-[var(--card-border)] p-5 flex flex-col justify-center min-h-[420px] hover:shadow-xl transition-all relative ">
                   <Compass size={40} className="mx-auto text-indigo-400/50 mb-3" />
                   <p className="text-sm">No featured insights available yet. Check back soon!</p>
                 </div>

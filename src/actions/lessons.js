@@ -167,23 +167,22 @@ export async function deleteLesson(id) {
 }
 
 // 13. Like toggle
-export async function likeLesson(id) {
-  try {
-    const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"]) return { error: "Unauthorized" };
+// export async function likeLesson(id) {
+//   try {
+//     const authHeaders = await getAuthHeaders();
 
-    const res = await fetch(`${EXPRESS_API}/api/lessons/${id}/like`, {
-      method: "PATCH",
-      headers: authHeaders
-    });
-    const result = await res.json();
-    if (!res.ok) return { error: result.error || "Failed to like lesson" };
-    return { success: true, ...result };
-  } catch (error) {
-    console.error("Error in likeLesson:", error);
-    return { error: error.message };
-  }
-}
+//     const res = await fetch(`${EXPRESS_API}/api/lessons/${id}/like`, {
+//       method: "PATCH",
+//       headers: authHeaders
+//     });
+//     const result = await res.json();
+//     if (!res.ok) return { error: result.error || "Failed to like lesson" };
+//     return { success: true, ...result };
+//   } catch (error) {
+//     console.error("Error in likeLesson:", error);
+//     return { error: error.message };
+//   }
+// }
 
 // 14. Favorite toggle
 export async function favoriteLesson(id) {
@@ -207,19 +206,6 @@ export async function favoriteLesson(id) {
 
 // COMMENTS SERVER ACTIONS
 
-// 1. Get comments for a lesson
-export async function getComments(lessonId) {
-  try {
-    const res = await fetch(`${EXPRESS_API}/api/comments/${lessonId}`, {
-      cache: "no-store"
-    });
-    if (!res.ok) throw new Error("Failed to fetch comments");
-    return await res.json();
-  } catch (error) {
-    console.error("Error in getComments:", error);
-    return [];
-  }
-}
 
 // 2. Add comment
 export async function addComment(lessonId, content) {

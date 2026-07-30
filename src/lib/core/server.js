@@ -34,10 +34,9 @@ export const serverFetch = async (path) => {
 };
 
 
-export const authorizeServerFetch = async (path, role) => {
+export const authorizeServerFetch = async (path) => {
   const token = await getTokenServer()
   const authHeaders = await getAuthHeaders();
-  if (!authHeaders["x-user-id"] || authHeaders["x-user-role"] !== role) return [];
   const res = await fetch(`${baseUrl}${path}`,{
     headers:{
       "Content-Type": "application/json",
@@ -52,8 +51,6 @@ export const serverMutation = async (path, data, method = "POST") => {
   const token = await getTokenServer();
   try {
     const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"]) return { error: "Unauthorized" };
-
     const res = await fetch(`${baseUrl}${path}`, {
       method,
       headers: {

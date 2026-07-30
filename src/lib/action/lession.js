@@ -7,5 +7,9 @@ export const createLesson = async (data) => {
 };
 
 export const removeMyFavoritesLesson = async (userId) => {
-  return serverMutation(`/api/lessons/${userId}/favorite`, "", "PATCH");
+  return serverMutation(`/api/lessons/${userId}/favorite`, {}, "PATCH");
 };
+
+export const addLessonLike = async (id) =>{
+  return serverMutation(`/api/lessons/${id}/like`, {}, "PATCH" );
+}

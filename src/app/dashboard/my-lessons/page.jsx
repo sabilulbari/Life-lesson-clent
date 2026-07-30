@@ -35,7 +35,7 @@ export default function MyLessons() {
       setLoading(true);
       try {
         const data = await getUserLesson(userId);
-        setLessons(data || []);
+        setLessons(data.lessons || []);
       } catch (err) {
         toast.error("Failed to load your lessons.");
       } finally {
@@ -57,6 +57,7 @@ export default function MyLessons() {
         setLessons(lessons.map((l) => (l._id === lesson._id ? { ...l, visibility: newVisibility } : l)));
       }
     } catch (err) {
+      console.log(err);
       toast.error("Failed to change visibility");
     }
   };
@@ -157,7 +158,7 @@ export default function MyLessons() {
           <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent animate-spin rounded-full mb-3" />
           <span className="text-xs text-slate-600 dark:text-slate-400">Loading your library...</span>
         </div>
-      ) : lessons?.lessons.length === 0 ? (
+      ) : lessons?.length === 0 ? (
         <div className="text-center py-16 bg-slate-800/10 border border-slate-700/20 rounded-2xl p-6">
           <Globe size={36} className="mx-auto text-slate-500 dark:text-slate-600 mb-2" />
           <p className="text-sm text-slate-600 dark:text-slate-400">No lessons created yet.</p>
@@ -180,7 +181,7 @@ export default function MyLessons() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-800/20 text-slate-700 dark:text-slate-300">
-              {lessons?.lessons.map((lesson) => (
+              {lessons?.map((lesson) => (
                 <tr key={lesson._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/10 transition-colors">
                   <td className="py-3 px-2 max-w-50 truncate font-bold text-slate-900 dark:text-slate-200">{lesson.title}</td>
                   <td className="py-3 px-2 text-slate-900 dark:text-slate-200">{lesson.category}</td>

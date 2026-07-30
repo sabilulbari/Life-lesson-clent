@@ -7,7 +7,6 @@ export async function proxy(request) {
     headers: request.headers,
   });
 
-  console.log(session, "i am from proxy");
 
   const pathname = request.nextUrl.pathname;
 
