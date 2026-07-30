@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import auth from "../auth";
 import { getTokenServer } from "../getTokenServer";
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const baseUrl = process.env.NEXT_PUBLIC_EXPRESS_API_URL || "http://localhost:5000";
 
 async function getAuthHeaders() {
   const nextHeaders = await headers();
