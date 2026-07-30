@@ -28,22 +28,7 @@ async function getAuthHeaders() {
 }
 
 // 1. Get user statistics (Dashboard Home)
-export async function getUserStats() {
-  try {
-    const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"]) return null;
 
-    const res = await fetch(`${EXPRESS_API}/api/users/stats`, {
-      headers: authHeaders,
-      cache: "no-store"
-    });
-    if (!res.ok) throw new Error("Failed to fetch user stats");
-    return await res.json();
-  } catch (error) {
-    console.error("Error in getUserStats:", error);
-    return null;
-  }
-}
 
 // 2. Get admin dashboard statistics (Admin Home)
 export async function getAdminStats() {

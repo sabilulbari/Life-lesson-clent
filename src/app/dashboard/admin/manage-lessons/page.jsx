@@ -6,6 +6,7 @@ import { Eye, Star, Trash2, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
 import { reviewLesson, toggleFeatureLesson } from "@/lib/action/admin";
 import Link from "next/link";
+import { getAdminAllUserLesson } from "@/lib/api/AdminAllUsers";
 
 const CATEGORIES = ["Personal Growth", "Career", "Relationships", "Mindset", "Mistakes Learned"];
 
@@ -25,7 +26,7 @@ export default function ManageLessons() {
   const loadLessons = async () => {
     setLoading(true);
     try {
-      const data = await getAdminLessons({
+      const data = await getAdminAllUserLesson({
         category,
         visibility,
         isReviewed,

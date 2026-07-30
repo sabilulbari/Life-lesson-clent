@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { getLessons } from "@/lib/api/lesson";
 import Image from "next/image";
 import { Pagination, Table } from "@heroui/react";
+import { datalist } from "framer-motion/client";
 
 const CATEGORIES = ["Personal Growth", "Career", "Relationships", "Mindset", "Mistakes Learned"];
 const TONES = ["Motivational", "Sad", "Realization", "Gratitude"];
@@ -69,6 +70,7 @@ export default function PublicLessonsContent() {
         limit,
         sort,
       });
+
       setTotalPage(total_page);
       setLessons(data || []);
 

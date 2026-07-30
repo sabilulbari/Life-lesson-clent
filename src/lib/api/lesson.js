@@ -4,12 +4,16 @@ export const getAllLessons = async () => {
   return  serverFetch("/api/all/public/lessons");
 };
 
+export const getFeaturedLesson = async ()=>{
+  return serverFetch("/api/public/featured/lesson");
+}
+
 export async function getLessonById(id) {
   return  authorizeServerFetch(`/api/all/public/lessons/details/${id}`);
 }
 
 export const getUserStats = async () => {
-  return  authorizeServerFetch(`/api/users/stats`, "user");
+  return  authorizeServerFetch(`/api/users/stats`);
 };
 
 

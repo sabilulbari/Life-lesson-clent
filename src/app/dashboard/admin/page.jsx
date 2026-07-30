@@ -1,22 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAdminStats } from "@/actions/users";
-import { useSession } from "@/lib/auth-client";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { Users, BookOpen, AlertTriangle, UserCheck, Calendar, ArrowRight, ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
-import { redirect } from "next/navigation";
+import { getAdminStats } from "@/lib/api/AdminAllUsers";
 
 export default function AdminHome() {
-  const { data: session } = useSession();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const roll = session?.user.role
-  // if(roll !== "admin"){
-  //   return redirect("/unauthorized")
-  // }
 
   useEffect(() => {
     async function loadStats() {

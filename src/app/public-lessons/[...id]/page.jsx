@@ -14,7 +14,6 @@ import LessonBody from "@/components/lesson-details/LessonBody";
 import LessonSidebar from "@/components/lesson-details/LessonSidebar";
 import CommentSection from "@/components/lesson-details/CommentSection";
 import ReportModal from "@/components/lesson-details/ReportModal";
-import { addComment, favoriteLesson, likeLesson, reportLesson } from "@/actions/lessons";
 import { getComments, getLessonById, getLessons, getUserLesson } from "@/lib/api/lesson";
 import { addLessonComment, addLessonFevarite, addLessonLike, addLessonReport } from "@/lib/action/lession";
 

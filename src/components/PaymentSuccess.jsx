@@ -2,6 +2,10 @@
 
 import Link from "next/link";
 import { Check, Sparkles, ArrowRight, Download, ShieldCheck, Home, Mail } from "lucide-react";
+import { Button } from "@heroui/react";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function PaymentSuccess({
   transactionId = "TXN_9876543210",
@@ -14,6 +18,20 @@ export default function PaymentSuccess({
     year: "numeric",
   }),
 }) {
+
+  const router = useRouter()
+
+ const handleSignOut = async()=>{
+  try {
+      await authClient.signOut();
+      toast.success("Successfully logged out");
+      router.push("/");
+      router.refresh();
+    } catch (err) {
+      toast.error("Error signing out");
+    }
+ }
+
   return (
     <div className="flex-grow flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-lg glass rounded-3xl p-8 border border-[var(--card-border)] relative overflow-hidden text-center shadow-2xl">
@@ -34,7 +52,9 @@ export default function PaymentSuccess({
           <Sparkles size={14} /> Payment Successful
         </div>
 
-        <h1 className="text-3xl font-extrabold font-display bg-gradient-to-r from-indigo-400 via-cyan-400 to-indigo-300 bg-clip-text text-transparent">Welcome to Premium!</h1>
+        <h1 className="text-3xl font-extrabold font-display bg-gradient-to-r from-indigo-400 via-cyan-400 to-indigo-300 bg-clip-text text-transparent">
+          Please Login Again To Get Premium Feature!
+        </h1>
 
         <p className="text-slate-400 text-sm mt-2 max-w-sm mx-auto">Thank you for upgrading. Your account now has full access to all exclusive feature suites and lessons.</p>
 
@@ -79,13 +99,13 @@ export default function PaymentSuccess({
 
         {/* CTA Action Buttons */}
         <div className="mt-8 space-y-3">
-          <Link
-            href="/dashboard"
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 font-semibold text-white shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/35 transition-all flex items-center justify-center space-x-2 group active:scale-[0.98]"
+          <button
+          onClick={handleSignOut}
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 font-semibold text-white shadow-lg shadow-red-500/20 hover:shadow-red-500/35 transition-all flex items-center justify-center space-x-2 group active:scale-[0.98] cursor-pointer"
           >
-            <span>Go to Dashboard</span>
+            <span>Logout Here</span>
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
+          </button>
 
           <div className="grid grid-cols-2 gap-3">
             <Link

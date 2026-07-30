@@ -39,7 +39,6 @@ export default function Navbar() {
       router.push("/");
       router.refresh();
     } catch (err) {
-      console.error(err);
       toast.error("Error signing out");
     }
   };

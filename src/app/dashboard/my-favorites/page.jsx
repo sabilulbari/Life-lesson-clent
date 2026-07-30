@@ -4,10 +4,10 @@ import { useEffect, useState, useCallback } from "react";
 import { Eye, BookmarkMinus, Folder, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
-import { getMyFavoritesLesson } from "@/lib/api/lesson";
 import Link from "next/link";
-import { favoriteLesson } from "@/actions/lessons";
 import { useRouter } from "next/navigation";
+import { getMyFavoritesLesson } from "@/lib/api/lesson";
+import { removeMyFavoritesLesson } from "@/lib/action/lession";
 
 const CATEGORIES = ["Personal Growth", "Career", "Relationships", "Mindset", "Mistakes Learned"];
 const TONES = ["Motivational", "Sad", "Realization", "Gratitude"];
@@ -66,7 +66,7 @@ export default function MyFavorites() {
     setFavorites((prev) => prev.filter((f) => f.lessonId !== item.lessonId && f._id !== item._id));
 
     try {
-      const res = await favoriteLesson(item.lessonId);
+      const res = await removeMyFavoritesLesson(item.lessonId);
       if (res?.error) {
         // Rollback state if server action returns an error
         setFavorites(previousFavorites);

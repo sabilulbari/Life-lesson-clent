@@ -43,7 +43,6 @@ export default async function SuccessPage({ searchParams }) {
 
 
     return <PaymentSuccess transactionId={txnId} amount={formattedAmount} planName="Life Lessons Premium" customerEmail={customerEmail} />;
-  }
+  }}
 
   return null;
-}
