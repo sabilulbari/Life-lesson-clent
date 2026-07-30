@@ -16,7 +16,7 @@ import CommentSection from "@/components/lesson-details/CommentSection";
 import ReportModal from "@/components/lesson-details/ReportModal";
 import { addComment, favoriteLesson, likeLesson, reportLesson } from "@/actions/lessons";
 import { getComments, getLessonById, getLessons, getUserLesson } from "@/lib/api/lesson";
-import { addLessonLike } from "@/lib/action/lession";
+import { addLessonComment, addLessonFevarite, addLessonLike, addLessonReport } from "@/lib/action/lession";
 
 export default function LessonDetails() {
   const params = useParams();
@@ -102,12 +102,13 @@ export default function LessonDetails() {
       return;
     }
     try {
-      const res = await favoriteLesson(id);
+      const res = await addLessonFevarite(id);
+      const data = res.lesson;
       if (res.error) toast.error(res.error);
       else {
-        setFavCount(res.favoritesCount);
-        setFavorited(res.favorites?.includes(session.user.id));
-        toast.success(res.favorites?.includes(session.user.id) ? "Saved to favorites!" : "Removed from favorites");
+        setFavCount(data.favoritesCount);
+        setFavorited(data.favorites?.includes(session.user.id));
+        toast.success(data.favorites?.includes(session.user.id) ? "Saved to favorites!" : "Removed from favorites");
       }
     } catch (err) {
       toast.error("Something went wrong");
@@ -123,10 +124,11 @@ export default function LessonDetails() {
     }
     if (!newComment.trim()) return;
     try {
-      const res = await addComment(id, newComment);
+      const res = await addLessonComment(id, newComment);
+      const data = res.lesson;
       if (res.error) toast.error(res.error);
       else {
-        setComments([res.comment, ...comments]);
+        setComments([data, ...comments]);
         setNewComment("");
         toast.success("Comment added!");
       }
@@ -142,7 +144,7 @@ export default function LessonDetails() {
       return;
     }
     try {
-      const res = await reportLesson(id, lesson.title, reportReason);
+      const res = await addLessonReport(id, lesson.title, reportReason);
       if (res.error) toast.error(res.error);
       else {
         toast.success("Thank you. Reported successfully.");

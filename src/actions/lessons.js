@@ -9,7 +9,7 @@ const EXPRESS_API = process.env.NEXT_PUBLIC_EXPRESS_API_URL || "http://localhost
 async function getAuthHeaders() {
   const nextHeaders = await headers();
   const session = await auth.api.getSession({
-    headers: nextHeaders
+    headers: nextHeaders,
   });
 
   if (!session || !session.user) {
@@ -23,16 +23,15 @@ async function getAuthHeaders() {
     "x-user-role": user.role || "user",
     "x-user-plan": user.plan || "free",
     "x-user-name": user.name || "",
-    "x-user-photo": user.image || ""
+    "x-user-photo": user.image || "",
   };
 }
-
 
 // 3. Get top contributors of the week
 export async function getTopContributors() {
   try {
     const res = await fetch(`${EXPRESS_API}/api/lessons/top-contributors`, {
-      cache: "no-store"
+      cache: "no-store",
     });
     if (!res.ok) throw new Error("Failed to fetch top contributors");
     return await res.json();
@@ -46,7 +45,7 @@ export async function getTopContributors() {
 export async function getMostSavedLessons() {
   try {
     const res = await fetch(`${EXPRESS_API}/api/lessons/most-saved`, {
-      cache: "no-store"
+      cache: "no-store",
     });
     if (!res.ok) throw new Error("Failed to fetch most saved lessons");
     return await res.json();
@@ -56,7 +55,6 @@ export async function getMostSavedLessons() {
   }
 }
 
-
 // 6. Get My Favorites (favorited by authenticated user)
 export async function getMyFavorites() {
   try {
@@ -65,7 +63,7 @@ export async function getMyFavorites() {
 
     const res = await fetch(`${EXPRESS_API}/api/lessons/my-favorites`, {
       headers: authHeaders,
-      cache: "no-store"
+      cache: "no-store",
     });
     if (!res.ok) throw new Error("Failed to fetch my favorites");
     return await res.json();
@@ -79,7 +77,7 @@ export async function getMyFavorites() {
 export async function getAuthorLessons(authorId) {
   try {
     const res = await fetch(`${EXPRESS_API}/api/lessons/author/${authorId}`, {
-      cache: "no-store"
+      cache: "no-store",
     });
     if (!res.ok) throw new Error("Failed to fetch author lessons");
     return await res.json();
@@ -98,7 +96,7 @@ export async function getAdminLessons({ category = "", visibility = "", isReview
     const query = new URLSearchParams({ category, visibility, isReviewed });
     const res = await fetch(`${EXPRESS_API}/api/lessons/admin-all?${query.toString()}`, {
       headers: authHeaders,
-      cache: "no-store"
+      cache: "no-store",
     });
     if (!res.ok) throw new Error("Failed to fetch admin lessons");
     return await res.json();
@@ -122,8 +120,6 @@ export async function getLessonById(id) {
   }
 }
 
-
-
 // 11. Update a lesson
 export async function updateLesson(id, data) {
   try {
@@ -134,9 +130,9 @@ export async function updateLesson(id, data) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        ...authHeaders
+        ...authHeaders,
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
     const result = await res.json();
     if (!res.ok) return { error: result.error || "Failed to update lesson" };
@@ -155,7 +151,7 @@ export async function deleteLesson(id) {
 
     const res = await fetch(`${EXPRESS_API}/api/dashboard/admin/lessons/${id}`, {
       method: "DELETE",
-      headers: authHeaders
+      headers: authHeaders,
     });
     const result = await res.json();
     if (!res.ok) return { error: result.error || "Failed to delete lesson" };
@@ -166,108 +162,16 @@ export async function deleteLesson(id) {
   }
 }
 
-// 13. Like toggle
-// export async function likeLesson(id) {
-//   try {
-//     const authHeaders = await getAuthHeaders();
-
-//     const res = await fetch(`${EXPRESS_API}/api/lessons/${id}/like`, {
-//       method: "PATCH",
-//       headers: authHeaders
-//     });
-//     const result = await res.json();
-//     if (!res.ok) return { error: result.error || "Failed to like lesson" };
-//     return { success: true, ...result };
-//   } catch (error) {
-//     console.error("Error in likeLesson:", error);
-//     return { error: error.message };
-//   }
-// }
-
 // 14. Favorite toggle
-export async function favoriteLesson(id) {
-  try {
-    const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"]) return { error: "Unauthorized" };
-
-    const res = await fetch(`${EXPRESS_API}/api/lessons/${id}/favorite`, {
-      method: "PATCH",
-      headers: authHeaders
-    });
-    const result = await res.json();
-    if (!res.ok) return { error: result.error || "Failed to favorite lesson" };
-    return { success: true, ...result };
-  } catch (error) {
-    console.error("Error in favoriteLesson:", error);
-    return { error: error.message };
-  }
-}
-
 
 // COMMENTS SERVER ACTIONS
 
-
 // 2. Add comment
-export async function addComment(lessonId, content) {
-  try {
-    const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"]) return { error: "Unauthorized" };
 
-    const res = await fetch(`${EXPRESS_API}/api/comments`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...authHeaders
-      },
-      body: JSON.stringify({ lessonId, content })
-    });
-    const result = await res.json();
-    if (!res.ok) return { error: result.error || "Failed to post comment" };
-    return { success: true, comment: result };
-  } catch (error) {
-    console.error("Error in addComment:", error);
-    return { error: error.message };
-  }
-}
 
 // REPORTS SERVER ACTIONS
 
 // 1. Report a lesson
-
-export async function reportLesson1(lessonId, lessonTitle, reason){
-  const res = await fetch(`${EXPRESS_API}/api/reports`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ lessonId, lessonTitle, reason }),
-  });
-
-  const result = await res.json()
-  return result;
-}
-export async function reportLesson(lessonId, lessonTitle, reason) {
-  try {
-    const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"]) return { error: "Unauthorized" };
-
-    const res = await fetch(`${EXPRESS_API}/api/reports`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...authHeaders
-      },
-      body: JSON.stringify({ lessonId, lessonTitle, reason })
-    });
-    const result = await res.json();
-    if (!res.ok) return { error: result.error || "Failed to file report" };
-    return { success: true, report: result };
-  } catch (error) {
-    console.error("Error in reportLesson:", error);
-    return { error: error.message };
-  }
-}
-
 
 
 
