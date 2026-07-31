@@ -15,7 +15,7 @@ import LessonSidebar from "@/components/lesson-details/LessonSidebar";
 import CommentSection from "@/components/lesson-details/CommentSection";
 import ReportModal from "@/components/lesson-details/ReportModal";
 import { getComments, getLessonById, getLessons, getUserLesson } from "@/lib/api/lesson";
-import { addLessonComment, addLessonFevarite, addLessonLike, addLessonReport } from "@/lib/action/lession";
+import { addLessonComment, addLessonFavorite, addLessonLike, addLessonReport } from "@/lib/action/lession";
 
 export default function LessonDetails() {
   const params = useParams();
@@ -101,7 +101,7 @@ export default function LessonDetails() {
       return;
     }
     try {
-      const res = await addLessonFevarite(id);
+      const res = await addLessonFavorite(id);
       const data = res.lesson;
       if (res.error) toast.error(res.error);
       else {

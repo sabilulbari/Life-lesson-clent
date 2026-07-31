@@ -26,3 +26,7 @@ export const ignoreReports = async (lessonId) => {
 export const deleteLessonAndReports = async (lessonId) => {
   return serverMutation(`/api/reports/${lessonId}/ignore/delete`, { deleteType: "delete" }, "DELETE");
 };
+
+export const deleteUserLesson = async(id)=>{
+return serverMutation(`/api/dashboard/admin/lessons/${id}`, {}, "DELETE");
+}

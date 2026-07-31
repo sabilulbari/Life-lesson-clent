@@ -3,7 +3,7 @@
 import { authorizeServerFetch, serverMutation } from "../core/server";
 
 export const createLesson = async (data) => {
-  return await authorizeServerFetch("/api/user/dashboard/add/lesson", data);
+  return await serverMutation("/api/user/dashboard/add/lesson", data);
 };
 
 export const removeMyFavoritesLesson = async (userId) => {
@@ -14,14 +14,22 @@ export const addLessonLike = async (id) =>{
   return serverMutation(`/api/lessons/${id}/like`, {}, "PATCH" );
 }
 
-export const addLessonFevarite = async(id)=>{
+export const addLessonFavorite = async(id)=>{
   return serverMutation(`/api/lessons/${id}/favorite`, {}, "PATCH");
 }
 export const addLessonComment = async (lessonId, content) => {
-  return serverMutation(`/api/comments`, { lessonId, content }, "POST");
+  return serverMutation(`/api/comments`, { lessonId, content });
 };
 
 
 export const addLessonReport = async (lessonId, lessonTitle, reason) => {
-  return serverMutation(`/api/reports`, { lessonId, lessonTitle, reason }, "POST");
+  return serverMutation(`/api/reports`, { lessonId, lessonTitle, reason });
 };
+
+export const updateLesson = async (id, data)=>{
+  return serverMutation(`/api/lessons/${id}`, {data}, "PUT");
+}
+
+export const deleteUserLesson = async(id)=>{
+  return serverMutation(`/api/lessons/${id}`, {}, "DELETE");
+} 

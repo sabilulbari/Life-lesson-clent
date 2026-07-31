@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAdminLessons, deleteLesson } from "@/actions/lessons";
 import { Eye, Star, Trash2, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
-import { reviewLesson, toggleFeatureLesson } from "@/lib/action/admin";
+import { deleteUserLesson, reviewLesson, toggleFeatureLesson } from "@/lib/action/admin";
 import Link from "next/link";
 import { getAdminAllUserLesson } from "@/lib/api/AdminAllUsers";
 
@@ -79,7 +78,7 @@ export default function ManageLessons() {
     if (!deleteId) return;
     setDeleting(true);
     try {
-      const res = await deleteLesson(deleteId);
+      const res = await deleteUserLesson(deleteId);
       if (res.error) {
         toast.error(res.error);
       } else {

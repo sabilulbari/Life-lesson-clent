@@ -57,7 +57,9 @@ export default function AddLesson() {
         accessLevel: isPremiumUser ? formData.accessLevel : "Free",
       };
 
+      
       const res = await createLesson(submitData);
+      console.log(res, "I am from add lesson");
       if (res.error) {
         toast.error(res.error);
       } else {

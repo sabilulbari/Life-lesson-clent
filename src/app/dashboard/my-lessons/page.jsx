@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { deleteLesson, updateLesson } from "@/actions/lessons";
 import { useSession } from "@/lib/auth-client";
 import Link from "next/link";
 import { Eye, Edit2, Trash2, Globe, Lock, Unlock, HelpCircle, Save, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { getUserLesson } from "@/lib/api/lesson";
 import { useRouter } from "next/navigation";
+import { deleteUserLesson, updateLesson } from "@/lib/action/lession";
 
 const CATEGORIES = ["Personal Growth", "Career", "Relationships", "Mindset", "Mistakes Learned"];
 const TONES = ["Motivational", "Sad", "Realization", "Gratitude"];
@@ -87,7 +87,7 @@ export default function MyLessons() {
     if (!deleteId) return;
     setDeleting(true);
     try {
-      const res = await deleteLesson(deleteId);
+      const res = await deleteUserLesson(deleteId);
       if (res.error) {
         toast.error(res.error);
       } else {

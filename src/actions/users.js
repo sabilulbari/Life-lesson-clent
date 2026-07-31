@@ -31,22 +31,7 @@ async function getAuthHeaders() {
 
 
 // 2. Get admin dashboard statistics (Admin Home)
-export async function getAdminStats() {
-  try {
-    const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"] || authHeaders["x-user-role"] !== "admin") return null;
 
-    const res = await fetch(`${EXPRESS_API}/api/users/admin/stats`, {
-      headers: authHeaders,
-      cache: "no-store"
-    });
-    if (!res.ok) throw new Error("Failed to fetch admin stats");
-    return await res.json();
-  } catch (error) {
-    console.error("Error in getAdminStats:", error);
-    return null;
-  }
-}
 
 // 3. Get all users (Admin panel)
 export async function getAdminUsersList() {

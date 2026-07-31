@@ -120,47 +120,9 @@ export async function getLessonById(id) {
   }
 }
 
-// 11. Update a lesson
-export async function updateLesson(id, data) {
-  try {
-    const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"]) return { error: "Unauthorized" };
-
-    const res = await fetch(`${EXPRESS_API}/api/lessons/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        ...authHeaders,
-      },
-      body: JSON.stringify(data),
-    });
-    const result = await res.json();
-    if (!res.ok) return { error: result.error || "Failed to update lesson" };
-    return { success: true, lesson: result };
-  } catch (error) {
-    console.error("Error in updateLesson:", error);
-    return { error: error.message };
-  }
-}
 
 // 12. Delete a lesson
-export async function deleteLesson(id) {
-  try {
-    const authHeaders = await getAuthHeaders();
-    if (!authHeaders["x-user-id"]) return { error: "Unauthorized" };
 
-    const res = await fetch(`${EXPRESS_API}/api/dashboard/admin/lessons/${id}`, {
-      method: "DELETE",
-      headers: authHeaders,
-    });
-    const result = await res.json();
-    if (!res.ok) return { error: result.error || "Failed to delete lesson" };
-    return { success: true };
-  } catch (error) {
-    console.error("Error in deleteLesson:", error);
-    return { error: error.message };
-  }
-}
 
 // 14. Favorite toggle
 
