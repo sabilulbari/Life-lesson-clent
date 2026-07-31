@@ -6,6 +6,7 @@ import { redirect, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client"; // স্ট্যান্ডার্ড authClient ইম্পোর্ট
 import { KeyRound, Mail, User, Image, Check, X } from "lucide-react";
 import toast from "react-hot-toast";
+import { maxLength } from "better-auth";
 
 export default function Register() {
   const router = useRouter();
@@ -27,9 +28,10 @@ export default function Register() {
     hasUppercase: /[A-Z]/.test(formData.password),
     hasLowercase: /[a-z]/.test(formData.password),
     minLength: formData.password.length >= 6,
+    maxLengthLength: formData.password.length <= 6,
   };
 
-  const isPasswordValid = validations.hasUppercase && validations.hasLowercase && validations.minLength;
+  const isPasswordValid = validations.hasUppercase && validations.hasLowercase && validations.minLength && validations.maxLengthLength;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -176,13 +178,15 @@ export default function Register() {
             {/* Password Validation Rules */}
             <div className="mt-2.5 p-3 rounded-xl bg-slate-800/30 border border-slate-700/30 text-xs space-y-1.5">
               <div className="flex items-center space-x-2">
-                {validations.minLength ? <Check size={12} className="text-emerald-400" /> : <X size={12} className="text-rose-400" />}
-                <span className={validations.minLength ? "text-emerald-400" : "text-slate-400"}>At least 6 characters long</span>
+                {validations.minLength && validations.maxLengthLength ? <Check size={12} className="text-emerald-400" /> : <X size={12} className="text-rose-400" />}
+                <span className={validations.minLength && validations.maxLengthLength ? "text-emerald-400" : "text-slate-400"}>Exactly 6 characters long</span>
               </div>
+
               <div className="flex items-center space-x-2">
                 {validations.hasUppercase ? <Check size={12} className="text-emerald-400" /> : <X size={12} className="text-rose-400" />}
                 <span className={validations.hasUppercase ? "text-emerald-400" : "text-slate-400"}>Contains at least one uppercase letter</span>
               </div>
+
               <div className="flex items-center space-x-2">
                 {validations.hasLowercase ? <Check size={12} className="text-emerald-400" /> : <X size={12} className="text-rose-400" />}
                 <span className={validations.hasLowercase ? "text-emerald-400" : "text-slate-400"}>Contains at least one lowercase letter</span>

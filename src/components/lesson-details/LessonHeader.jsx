@@ -1,6 +1,9 @@
 import { Sparkles } from "lucide-react";
+import Image from "next/image";
 
 export default function LessonHeader({ lesson, isPremium }) {
+
+  console.log(lesson, "I am from page details photo");
   return (
     <div className="space-y-6">
       {/* Category / Emotional tone */}
@@ -22,9 +25,9 @@ export default function LessonHeader({ lesson, isPremium }) {
       <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-100 font-display">{lesson.title}</h1>
 
       {/* Featured Image */}
-      {lesson.lessonImage && (
+      {lesson?.image && (
         <div className="w-full h-72 sm:h-96 rounded-2xl overflow-hidden border border-slate-800/50 bg-slate-900 flex items-center justify-center">
-          <img src={lesson.lessonImage} alt={lesson.title} className="w-full h-full object-cover" />
+          <Image src={lesson.image} width={200} height={150} alt={lesson.title} className="w-full h-full object-cover" />
         </div>
       )}
     </div>

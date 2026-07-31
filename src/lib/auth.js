@@ -15,7 +15,9 @@ export const auth = betterAuth({
   database: mongodbAdapter(db),
   emailAndPassword: {
     enabled: true,
-    autoSignIn: false
+    autoSignIn: false,
+    minPasswordLength: 6,
+    maxPasswordLength: 6,
   },
   socialProviders: {
     google: {

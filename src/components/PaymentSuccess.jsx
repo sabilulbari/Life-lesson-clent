@@ -2,126 +2,152 @@
 
 import Link from "next/link";
 import { Check, Sparkles, ArrowRight, Download, ShieldCheck, Home, Mail } from "lucide-react";
-import { Button } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-export default function PaymentSuccess({
-  transactionId = "TXN_9876543210",
-  amount = "$39.99",
-  planName = "Life Lessons Premium",
-  customerEmail = "",
-  paymentDate = new Date().toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }),
-}) {
+export default function PaymentSuccess({ transactionId = "TXN_9876543210", amount = "$39.99", planName = "Life Lessons Premium", customerEmail = "", paymentDate }) {
+  const router = useRouter();
 
-  const router = useRouter()
+  // Set payment date on client side
+  const displayPaymentDate =
+    paymentDate ||
+    new Date().toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
 
- const handleSignOut = async()=>{
-  try {
+  // Logout handler
+  const handleSignOut = async () => {
+    try {
       await authClient.signOut();
+
       toast.success("Successfully logged out");
+
       router.push("/");
       router.refresh();
-    } catch (err) {
+    } catch (error) {
+      console.error("Logout error:", error);
+
       toast.error("Error signing out");
     }
- }
+  };
 
   return (
     <div className="flex-grow flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-lg glass rounded-3xl p-8 border border-[var(--card-border)] relative overflow-hidden text-center shadow-2xl">
         {/* Glow Effects */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
+
         <div className="absolute bottom-0 right-0 w-32 h-32 bg-cyan-500/15 rounded-full blur-2xl pointer-events-none" />
 
-        {/* Animated Success Icon Container */}
+        {/* Success Icon */}
         <div className="relative mx-auto mb-6 w-20 h-20 flex items-center justify-center">
           <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-indigo-500 to-cyan-400 opacity-20 animate-ping" />
+
           <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-500 to-cyan-400 flex items-center justify-center text-white shadow-xl shadow-indigo-500/30 relative z-10">
             <Check size={40} className="stroke-[3]" />
           </div>
         </div>
 
-        {/* Header Badge & Title */}
+        {/* Payment Badge */}
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold mb-3">
-          <Sparkles size={14} /> Payment Successful
+          <Sparkles size={14} />
+
+          <span>Payment Successful</span>
         </div>
 
+        {/* Title */}
         <h1 className="text-3xl font-extrabold font-display bg-gradient-to-r from-indigo-400 via-cyan-400 to-indigo-300 bg-clip-text text-transparent">
           Please Login Again To Get Premium Feature!
         </h1>
 
+        {/* Description */}
         <p className="text-slate-400 text-sm mt-2 max-w-sm mx-auto">Thank you for upgrading. Your account now has full access to all exclusive feature suites and lessons.</p>
 
-        {/* Email Notification Note */}
+        {/* Customer Email */}
         {customerEmail && (
           <div className="mt-4 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-800/60 border border-slate-700/50 text-xs text-slate-300">
             <Mail size={14} className="text-cyan-400" />
+
             <span>
               Receipt sent to <strong className="text-white">{customerEmail}</strong>
             </span>
           </div>
         )}
 
-        {/* Transaction Details Box */}
+        {/* Transaction Details */}
         <div className="mt-6 p-5 rounded-2xl bg-slate-800/40 border border-slate-700/50 text-left space-y-3.5 text-sm">
+          {/* Plan */}
           <div className="flex justify-between items-center pb-3 border-b border-slate-700/40">
             <span className="text-slate-400">Plan Upgrade</span>
+
             <span className="font-semibold text-indigo-400">{planName}</span>
           </div>
 
+          {/* Amount */}
           <div className="flex justify-between items-center">
             <span className="text-slate-400">Amount Paid</span>
+
             <span className="font-semibold text-white">{amount}</span>
           </div>
 
-          <div className="flex justify-between items-center">
-            <span className="text-slate-400">Transaction ID</span>
-            <span className="font-mono text-xs text-slate-300 bg-slate-900/60 px-2 py-1 rounded-md border border-slate-700/30">{transactionId}</span>
+          {/* Transaction ID */}
+          <div className="flex justify-between items-center gap-4">
+            <span className="text-slate-400 shrink-0">Transaction ID</span>
+
+            <span className="font-mono text-xs text-slate-300 bg-slate-900/60 px-2 py-1 rounded-md border border-slate-700/30 truncate max-w-[220px]">{transactionId}</span>
           </div>
 
+          {/* Date */}
           <div className="flex justify-between items-center">
             <span className="text-slate-400">Date</span>
-            <span className="text-slate-300">{paymentDate}</span>
+
+            <span className="text-slate-300">{displayPaymentDate}</span>
           </div>
         </div>
 
-        {/* Security / Guarantee Micro Note */}
+        {/* Security Note */}
         <div className="flex items-center justify-center gap-2 mt-4 text-xs text-slate-400">
           <ShieldCheck size={16} className="text-emerald-400" />
+
           <span>Secured payment & instant access activated</span>
         </div>
 
-        {/* CTA Action Buttons */}
+        {/* Action Buttons */}
         <div className="mt-8 space-y-3">
+          {/* Logout */}
           <button
-          onClick={handleSignOut}
+            type="button"
+            onClick={handleSignOut}
             className="w-full py-3 rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 font-semibold text-white shadow-lg shadow-red-500/20 hover:shadow-red-500/35 transition-all flex items-center justify-center space-x-2 group active:scale-[0.98] cursor-pointer"
           >
             <span>Logout Here</span>
+
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </button>
 
+          {/* Secondary Buttons */}
           <div className="grid grid-cols-2 gap-3">
+            {/* Home */}
             <Link
               href="/"
               className="py-2.5 rounded-xl border border-slate-700/50 bg-slate-800/40 text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all flex items-center justify-center space-x-2 font-medium text-xs"
             >
               <Home size={15} />
+
               <span>Back Home</span>
             </Link>
 
+            {/* Print */}
             <button
-              onClick={() => window.print()}
               type="button"
+              onClick={() => window.print()}
               className="py-2.5 rounded-xl border border-slate-700/50 bg-slate-800/40 text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all flex items-center justify-center space-x-2 font-medium text-xs"
             >
               <Download size={15} />
+
               <span>Print Receipt</span>
             </button>
           </div>
