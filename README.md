@@ -3,6 +3,8 @@
 ## Overview
 The **Life Lessons** frontend is a modern web application designed for creating, organizing, sharing, and exploring meaningful life lessons and personal growth insights. It provides an intuitive interface for both free and premium users, as well as an admin control panel for content and user management.
 
+## Server Repository
+[https://github.com/sabilulbari/Life-lesson-server](https://github.com/sabilulbari/Life-lesson-server)
 ## Tech Stack
 - **Next.js** (App Router)
 - **React** 19
