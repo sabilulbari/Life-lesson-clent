@@ -4,6 +4,7 @@ import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import { FaGithub, FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import Image from "next/image";
 
 const Footer = () => {
   return (
@@ -17,8 +18,8 @@ const Footer = () => {
           <div className="space-y-5">
             <div className="flex items-center space-x-3">
               {/* Premium Glass Icon Container */}
-              <div className="glass p-2.5 text-[var(--primary)] rounded-xl shadow-[0_8px_16px_rgba(99,102,241,0.15)] flex items-center justify-center">
-                <BookOpen size={24} />
+              <div className="glass p-1 text-[var(--primary)] rounded-3xl shadow-[0_8px_16px_rgba(99,102,241,0.15)] flex items-center justify-center">
+                <Image src={'/life_lesson_brand.png'} alt="Life Lesson" height={40} width={40} className="rounded-3xl"></Image>
               </div>
               <div>
                 {/* Heading using font-display (Outfit) and Text Gradient */}
