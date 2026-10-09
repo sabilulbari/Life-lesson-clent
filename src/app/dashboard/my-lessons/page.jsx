@@ -109,39 +109,39 @@ export default function MyLessons() {
   };
 
   // Submit Edit form
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    if (!editData.title || !editData.description) {
-      toast.error("Title and description are required.");
-      return;
-    }
-
-    setUpdating(true);
-    try {
-      const res = await updateLesson(editData._id, {
-        title: editData.title,
-        category: editData.category,
-        emotionalTone: editData.emotionalTone,
-        image: editData.image,
-        visibility: editData.visibility,
-        accessLevel: isPremiumUser ? editData.accessLevel : "Free",
-        description: editData.description,
-      });
-
-      if (res.error) {
-        toast.error(res.error);
-      } else {
-        toast.success("Lesson updated successfully!");
-        setLessons(lessons.map((l) => (l._id === editData._id ? res.lesson : l)));
-        setEditModalOpen(false);
-        setEditData(null);
+    const handleEditSubmit = async (e) => {
+      e.preventDefault();
+      if (!editData.title || !editData.description) {
+        toast.error("Title and description are required.");
+        return;
       }
-    } catch (err) {
-      toast.error("Failed to update lesson.");
-    } finally {
-      setUpdating(false);
-    }
-  };
+    
+      setUpdating(true);
+      try {
+        const res = await updateLesson(editData._id, {
+          title: editData.title,
+          category: editData.category,
+          emotionalTone: editData.emotionalTone,
+          image: editData.image,
+          visibility: editData.visibility,
+          accessLevel: isPremiumUser ? editData.accessLevel : "Free",
+          description: editData.description,
+        });
+
+        if (res.error) {
+          toast.error(res.error);
+        } else {
+          toast.success("Lesson updated successfully!");
+          setLessons(lessons.map((l) => (l._id === editData._id ? res.lesson : l)));
+          setEditModalOpen(false);
+          setEditData(null);
+        }
+      } catch (err) {
+        toast.error("Failed to update lesson.");
+      } finally {
+        setUpdating(false);
+      }
+    };
 
   return (
     <div className="space-y-6">

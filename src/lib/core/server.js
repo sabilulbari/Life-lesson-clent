@@ -49,6 +49,8 @@ export const authorizeServerFetch = async (path) => {
 
 export const serverMutation = async (path, data, method = "POST") => {
   const token = await getTokenServer();
+
+  console.log(data, method);
   try {
     const authHeaders = await getAuthHeaders();
     const res = await fetch(`${baseUrl}${path}`, {

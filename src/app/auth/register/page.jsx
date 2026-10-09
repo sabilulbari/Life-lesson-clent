@@ -223,7 +223,7 @@ export default function Register() {
 
         <p className="mt-5 text-center text-xs text-slate-400">
           Already have an account?{" "}
-          <Link href="/login" className="text-indigo-400 hover:text-indigo-300 font-semibold underline">
+          <Link href="/auth/login" className="text-indigo-400 hover:text-indigo-300 font-semibold underline">
             Log In
           </Link>
         </p>

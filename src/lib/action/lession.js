@@ -27,7 +27,7 @@ export const addLessonReport = async (lessonId, lessonTitle, reason) => {
 };
 
 export const updateLesson = async (id, data)=>{
-  return serverMutation(`/api/lessons/${id}`, {data}, "PUT");
+  return serverMutation(`/api/lessons/${id}`, data, "PUT");
 }
 
 export const deleteUserLesson = async(id)=>{
